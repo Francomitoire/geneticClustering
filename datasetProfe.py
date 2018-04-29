@@ -32,6 +32,7 @@ def generarCentroides(cantidad,minx,maxx,miny,maxy):
         x = random.randrange(minx,maxx)
         y = random.randrange(miny,maxy)
         centroides.append((x , y))
+
     return(centroides)
 
 def calcularCentroide(punto,centroides):
@@ -52,8 +53,12 @@ def asignarCentroide(punto, centroides, puntosEnCentroide):
     puntosEnCentroide[posicionCentroide].append(punto)
     return puntosEnCentroide
 
+
+
 def funcionFitness(centroides, puntosEnCentroide):
+    '''Recibe un conjunto de centroides y los puntos que pertenecen a ellos, y calcula la funcion fitness en base a la distancia euclidea '''
     distanciaTotal = 0
+    #proceso un centroide
     for i in range(len(centroides)):
         centroide = centroides[i]
         puntos = puntosEnCentroide[i]
@@ -62,7 +67,7 @@ def funcionFitness(centroides, puntosEnCentroide):
             punto = puntos[i]
             distancia = math.hypot(centroide[0]-punto[0],centroide[1]-punto[1])
             distanciaTotal = distanciaTotal + distancia
-        fitness = distanciaTotal / len(centroide)
+        fitness = distanciaTotal / len(puntos)
     return(fitness)
 
 dataset = leerTxt("C:\\Franco\\Facultad\\IA\\dataset01.txt")
@@ -71,7 +76,7 @@ x,y= zip(*dataset)
 
 #-----------------------------------------------------------------
 
-for i in range(400):
+for i in range(1):
 
     centroides1 = generarCentroides(2,0,round(max(x)),0,round(max(y)))
     centroides2 =  generarCentroides(2,0,round(max(x)),0,round(max(y)))
