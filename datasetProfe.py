@@ -70,7 +70,7 @@ def funcionFitness(centroides, puntosEnCentroide):
         fitness = distanciaTotal / len(puntos)
     return(fitness)
 
-dataset = leerTxt("C:\\Franco\\Facultad\\IA\\dataset01.txt")
+dataset = leerTxt("C:\\Users\\Mati\\PycharmProjects\\geneticClustering\\dataset01.txt")
 x,y= zip(*dataset)
 
 

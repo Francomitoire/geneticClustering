@@ -80,7 +80,7 @@ def evaluarFitness(individuo, puntosEnIndividuo):
     return fitness
 
 
-dataset = leerTxt("C:\\Franco\\Facultad\\IA\\dataset01.txt")
+dataset = leerTxt("C:\\Users\\Mati\\PycharmProjects\\geneticClustering\\Clusters\\dataset01.txt")
 x, y = zip(*dataset)
 maxx = round(max(x))
 maxy = round(max(y))
