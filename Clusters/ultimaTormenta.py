@@ -2,10 +2,59 @@ import random
 import math
 import matplotlib.pyplot as pl
 import random
+import easygui
+
+class Individuo(object):
+    """
+    El atributo valor es un conjunto de centroides
+    """
+
+
+    def __init__(self):
+        self.valor = None
+        self.fitness = None
+        self.puntos = []
+
+    def setValorRandom(self,cantidad,minx,maxx,miny,maxy):
+        individuo = []
+        for i in range(cantidad):
+            x = random.randrange(minx, maxx)
+            y = random.randrange(miny, maxy)
+            individuo.append((x, y))
+        self.valor = individuo
+
+    def setValor(self,valor):
+        self.valor = valor
+
+    def setFitness(self):
+        for i in range(len(self.valor)):
+            fitness = 0
+            alelo = self.valor[i]
+            distancia = 0
+            puntos = self.puntos[i]
+
+            # puntos[j] es un punto de todos los puntos que pertenecen al individuo i
+            for j in range(len(puntos)):
+                punto = puntos[j]
+                distancia = distancia + math.hypot(alelo[0] - punto[0], alelo[1] - punto[1])
+
+            errorIndividuo = distancia / len(self.puntos)
+            fitness = fitness + errorIndividuo
+        self.fitness = fitness
+
+    def setPuntos(self,dataset):
+        for i in range(len(self.valor)):
+            self.puntos.append([])
+
+        for i in range(len(dataset)):
+            punto = dataset[i]
+            posicionCentroide = calcularCentroide(punto,self)
+            self.puntos[posicionCentroide].append(punto)
 
 
 #formato de la solucion o individuo: [(2,3),(5,1)(3,14)]
 
+#FUNCIONES EN GENERAL
 
 def leerTxt(path):
     '''Lee un txt donde cada linea esta conformada por 2 numeros y convierte cada linea en una tupla de 2 elementos'''
@@ -28,28 +77,22 @@ def graficarPuntos(x, y):
     '''Recibe como paraemtro todas las coords x, luego todas los coords y, y las grafica'''
     pl.scatter(x,y)
 
-def generarIndividuo(cantidad,minx,maxx,miny,maxy):
-    '''Genera un conjunto de centroides dado por la cantidad'''
-    individuo = []
-    for i in range(cantidad):
-        x = random.randrange(minx,maxx)
-        y = random.randrange(miny,maxy)
-        individuo.append((x , y))
-    return(individuo)
 
-def generarPobaclionInicial(tamanoPoblacion,tamanoIndividuo,minx,maxx,miny,maxy):
+def generarPoblacionInicial(tamanoPoblacion,tamanoIndividuo,minx,maxx,miny,maxy):
     poblacion = []
     for i in range(tamanoPoblacion):
-        individuo = generarIndividuo(tamanoIndividuo,minx,maxx,miny,maxy)
+        individuo = Individuo()
+        individuo.setValorRandom(tamanoIndividuo,minx,maxx,miny,maxy)
+        individuo.setPuntos(dataset)
         poblacion.append(individuo)
     return poblacion
 
 def calcularCentroide(punto,individuo):
     centroideMinimo = 0
-    centroide = individuo[0]
+    centroide = individuo.valor[0]
     min = math.hypot(punto[0]-centroide[0],punto[1]-centroide[1])
-    for i in range(1,len(individuo)):
-        centroide = individuo[i]
+    for i in range(1,len(individuo.valor)):
+        centroide = individuo.valor[i]
         dist = math.hypot(punto[0]-centroide[0],punto[1]-centroide[1])
         if (dist < min):
             min = dist
@@ -57,27 +100,15 @@ def calcularCentroide(punto,individuo):
 
     return(centroideMinimo)
 
-def asignarCentroide(punto, individuo, puntosEnIndividuo):
-    posicionCentroide = calcularCentroide(punto,individuo)
-    puntosEnIndividuo[posicionCentroide].append(punto)
-    return puntosEnIndividuo
+def seleccionRanking(poblacion, cantidad):
+    #MATI esto no hace nada concreto aun xd, ignoralo
+    poblacion.sort(key = lambda ind: ind.fitness)
+    puntos = list(range(1,len(poblacion)+1))
+    puntos.reverse()
+    ranking = []
+    print(puntos)
 
-def evaluarFitness(individuo, puntosEnIndividuo):
-    #recorro todos los puntos
 
-    for i in range(len(individuo)):
-        fitness = 0
-        alelo = individuo[i]
-        distancia = 0
-        puntos = puntosEnIndividuo[i]
-        # puntosEnIndividuo[j] es un punto de todos los puntos que pertenecen al individuo i
-
-        for j in range(len(puntos)):
-            punto = puntos[j]
-            distancia = distancia + math.hypot(alelo[0]-punto[0],alelo[1]-punto[1])
-        errorIndividuo = distancia / len(puntosEnIndividuo)
-        fitness = fitness + errorIndividuo
-    return fitness
 
 
 dataset = leerTxt("C:\\Franco\\Facultad\\IA\\dataset01.txt")
@@ -86,39 +117,41 @@ maxx = round(max(x))
 maxy = round(max(y))
 minx = round(min(x))
 miny = round(min(y))
+cantidadIndividuos = 5
 tamanoIndividuo = 3
 
-poblacion = generarPobaclionInicial(10,tamanoIndividuo,minx,maxx,miny,maxy)
-
-puntosEnIndividuo = []
-for i in range(tamanoIndividuo):
-    puntosEnIndividuo.append([])
-
-mejor = poblacion[0]
-fitnesMejor= evaluarFitness(poblacion[0],puntosEnIndividuo)
-puntosMejor = puntosEnIndividuo
 
 
-for i in range(len(poblacion)):
-    individuo = poblacion[0]
-
-    for i in range(len(dataset)):
-        punto = dataset[i]
-        asignarCentroide(punto,individuo,puntosEnIndividuo)
-        fitness = evaluarFitness(individuo,puntosEnIndividuo)
-
-    if fitness < fitnesMejor:
-        mejor = individuo
-        fitnesMejor = fitness
-        puntosMejor = puntosEnIndividuo
-
-for i in range(len(mejor)):
-    if puntosMejor[i]:
-        puntosx, puntosy = zip(*puntosMejor[i])
-        graficarPuntos(puntosx,puntosy)
 
 
-xCentroides,yCentroides = zip(*individuo)
-graficarPuntos(xCentroides,yCentroides)
+
+poblacion  = generarPoblacionInicial(10,3,minx,maxx,miny,maxy)
+for ind in poblacion:
+    ind.setFitness()
+
+poblacion.sort(key = lambda individuo: individuo.fitness)
+seleccionRanking(poblacion,3)
+
+
+
+
+
+
+
+
+
+ind = poblacion[len(poblacion) - 1]
+for i in range(len(ind.puntos)):
+    if ind.puntos[i]:
+        px,py = zip(*ind.puntos[i])
+        graficarPuntos(px,py)
+
+for centroide in ind.valor:
+    px,py = centroide
+    graficarPuntos(px, py)
+
+
 
 pl.show()
+
+
