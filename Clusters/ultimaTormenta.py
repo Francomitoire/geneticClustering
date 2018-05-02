@@ -1,6 +1,5 @@
+import random
 import math
-from operator import attrgetter
-
 import matplotlib.pyplot as pl
 import random
 import easygui
@@ -12,8 +11,8 @@ class Individuo(object):
 
 
     def __init__(self):
-        self.valor = 0
-        self.fitness = 0
+        self.valor = None
+        self.fitness = None
         self.puntos = []
 
     def setValorRandom(self,cantidad,minx,maxx,miny,maxy):
@@ -28,7 +27,7 @@ class Individuo(object):
         self.valor = valor
 
     def setFitness(self):
-
+        #arreglar fitnes, colocar fitness = 99999 y colocar los if si no procesa ningun dato que quede esa fitnes
         for i in range(len(self.valor)):
             fitness = 0
             alelo = self.valor[i]
@@ -43,8 +42,6 @@ class Individuo(object):
             errorIndividuo = distancia / len(self.puntos)
             fitness = fitness + errorIndividuo
         self.fitness = fitness
-        return fitness
-
 
     def setPuntos(self,dataset):
         for i in range(len(self.valor)):
@@ -75,10 +72,10 @@ def leerTxt(path):
             tupla = (float(tupla[0]),float(tupla[1]))
             #print(type(tupla[0]))
             salida.append(tupla)
-        return salida
+        return(salida)
 
 def graficarPuntos(x, y):
-    '''Recibe como parametro todas las coords x, luego todas los coords y, y las grafica'''
+    '''Recibe como paraemtro todas las coords x, luego todas los coords y, y las grafica'''
     pl.scatter(x,y)
 
 
@@ -102,50 +99,70 @@ def calcularCentroide(punto,individuo):
             min = dist
             centroideMinimo = i
 
-    return centroideMinimo
+    return(centroideMinimo)
+
+def seleccionRanking(poblacion, cantidad):
+    #MATI esto no hace nada concreto aun xd, ignoralo
+    poblacion.sort(key = lambda ind: ind.fitness)
+    puntos = list(range(1,len(poblacion)+1))
+    puntos.reverse()
+    ranking = []
+    print(puntos)
 
 
+def seleccionControlada(poblacion):
+    n = len(poblacion)
+    totalFitness = 0
 
-def seleccionRanking(poblacion,cantidadSeleccionar):
-    fitness = []
-    listpob = []
-    for i in poblacion:
-        listpob.append(i.valor)
+    for ind in poblacion:
+        totalFitness = totalFitness + ind.fitness
 
-    for i in poblacion:
-        fitness.append(i.setFitness())
-    fitness.sort()
-    listaPobOrdenada = list(zip(*sorted(zip(listpob, fitness))))
-    print(fitness)
-    print(listaPobOrdenada)
+    promFitness = totalFitness / n
+    c = []
+    copias = []
+
+    for i in range(len(poblacion)):
+        c.append(poblacion[i].fitness/promFitness)
+        copias.append(int(c[i]))
+
+    while sum(copias) !=  len(poblacion):
+
+        for i in range(len(poblacion)):
+            probabilidad = abs(c[i])-abs(int(c[i]))
+            copia = 0
+            if random.uniform(0,1) <= probabilidad:
+                copia = 1
+            copias[i] = copias[i] + copia
+            if sum(copias) == len(poblacion):
+                break
+    #print(copias)
+    #print(c)
 
 
- #   puntos = list(range(1,len(poblacion)+1))
- #   puntos.reverse()
- #   ranking = []
- #   print(puntos)
-
-
-
-
-dataset = leerTxt("C:\\PythonProjects\\geneticClustering\\Clusters\\dataset01.txt")
+dataset = leerTxt("C:\\Franco\\Facultad\\IA\\dataset01.txt")
 x, y = zip(*dataset)
 maxx = round(max(x))
 maxy = round(max(y))
 minx = round(min(x))
 miny = round(min(y))
-
-TotalSeleccion = 5
-
-poblacion = generarPoblacionInicial(10,3,minx,maxx,miny,maxy)
-
-sel = seleccionRanking(poblacion,4)
-#poblacion.sort(key = lambda individuo: individuo.fitness)
-#seleccionRanking(poblacion,3)
+cantidadIndividuos = 10
+tamanoIndividuo = 3
 
 
 
 
+
+
+poblacion  = generarPoblacionInicial(cantidadIndividuos,3,minx,maxx,miny,maxy)
+for ind in poblacion:
+    ind.setFitness()
+
+poblacion.sort(key = lambda individuo: individuo.fitness)
+
+seleccionControlada(poblacion)
+
+
+'''
 ind = poblacion[len(poblacion) - 1]
 for i in range(len(ind.puntos)):
     if ind.puntos[i]:
@@ -156,9 +173,8 @@ for centroide in ind.valor:
     px,py = centroide
     graficarPuntos(px, py)
 
+'''
 
-
-pl.show()
-
+#pl.show()
 
 
