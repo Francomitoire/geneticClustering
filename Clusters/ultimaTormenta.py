@@ -136,7 +136,7 @@ def seleccionControlada(poblacion):
             if sum(copias) == len(poblacion):
                 break
     #print(copias)
-    #print(c) xdxd
+    #print(c) xdxdasd
 
 
 dataset = leerTxt("C:\\Franco\\Facultad\\IA\\dataset01.txt")
