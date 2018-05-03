@@ -2,6 +2,7 @@ import random
 import math
 import matplotlib.pyplot as pl
 import random
+import numpy as np
 import easygui
 
 class Individuo(object):
@@ -50,8 +51,7 @@ class Individuo(object):
 
         if fitness > Individuo.mayorFitness:
             Individuo.mayorFitness = fitness
-
-        self.fitness = fitness
+        self.fitness = round(fitness,2)
         #print('Fitness: ' + str(fitness))
 
     def setPuntos(self,dataset):
@@ -148,11 +148,11 @@ maxx = round(max(x))
 maxy = round(max(y))
 minx = round(min(x))
 miny = round(min(y))
-cantidadIndividuos = 300
-tamanoIndividuo = 3
+cantidadIndividuos = 1000
+tamanoIndividuo = 2
 
 
-poblacion  = generarPoblacionInicial(cantidadIndividuos,3,minx,maxx,miny,maxy)
+poblacion  = generarPoblacionInicial(cantidadIndividuos,tamanoIndividuo,minx,maxx,miny,maxy)
 
 
 
@@ -169,19 +169,38 @@ seleccionControlada(poblacion)
 
 print(poblacion[len(poblacion)-1].fitness)
 
-ind = poblacion[len(poblacion)-1]
+ind = poblacion[0]
+ind2 = poblacion[len(poblacion)-1]
+
+fig1 = pl.figure()
+fig2 = pl.figure()
+ax1 = fig1.add_subplot(111)
+ax1.set_title('Mejor individuo, Fitness: '+str(ind.fitness)+' -'+' Individuos: '+str(cantidadIndividuos))
+
+ax2 = fig2.add_subplot(111)
+ax2.set_title('Peor individuo, Fitness: '+str(ind2.fitness)+' -'+' Individuos: '+str(cantidadIndividuos))
+print(ind.fitness)
+
 
 for i in range(len(ind.puntos)):
     if ind.puntos[i]:
         px,py = zip(*ind.puntos[i])
-        graficarPuntos(px,py)
+        ax1.scatter(px,py)
 
 for centroide in ind.valor:
     px,py = centroide
-    graficarPuntos(px, py)
+    ax1.scatter(px,py)
+
+
+for i in range(len(ind2.puntos)):
+    if ind2.puntos[i]:
+        px,py = zip(*ind2.puntos[i])
+        ax2.scatter(px,py)
+
+for centroide in ind.valor:
+    px,py = centroide
+    ax2.scatter(px,py)
 
 
 
 pl.show()
-
-
