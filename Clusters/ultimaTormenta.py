@@ -8,7 +8,8 @@ class Individuo(object):
     """
     El atributo valor es un conjunto de centroides
     """
-
+    #ESTE ATRIBUTO TIENE QUE TENER EL MAYOR FITNESS DE TODA LA POBLACION EN TO DO MOMENTO
+    mayorFitness = 0
 
     def __init__(self):
         self.valor = None
@@ -27,9 +28,12 @@ class Individuo(object):
         self.valor = valor
 
     def setFitness(self):
-        #arreglar fitnes, colocar fitness = 99999 y colocar los if si no procesa ningun dato que quede esa fitnes
+        #arreglar fitnes, colocar fitness = 99999 y colocar los if si no procesa ningun dato que quede esa fitness
+        fitness = 0
+
+        #por cada centroide..
         for i in range(len(self.valor)):
-            fitness = 0
+            errorCentroide = 0
             alelo = self.valor[i]
             distancia = 0
             puntos = self.puntos[i]
@@ -39,9 +43,16 @@ class Individuo(object):
                 punto = puntos[j]
                 distancia = distancia + math.hypot(alelo[0] - punto[0], alelo[1] - punto[1])
 
-            errorIndividuo = distancia / len(self.puntos)
-            fitness = fitness + errorIndividuo
+            errorCentroide = distancia / len(self.puntos)
+            #print('error centroide '+str(i)+ ' :'+str(errorCentroide))
+            fitness = fitness + errorCentroide
+            #print('Fitness: ' + str(fitness))
+
+        if fitness > Individuo.mayorFitness:
+            Individuo.mayorFitness = fitness
+
         self.fitness = fitness
+        #print('Fitness: ' + str(fitness))
 
     def setPuntos(self,dataset):
         for i in range(len(self.valor)):
@@ -88,6 +99,7 @@ def generarPoblacionInicial(tamanoPoblacion,tamanoIndividuo,minx,maxx,miny,maxy)
         poblacion.append(individuo)
     return poblacion
 
+
 def calcularCentroide(punto,individuo):
     centroideMinimo = 0
     centroide = individuo.valor[0]
@@ -100,14 +112,6 @@ def calcularCentroide(punto,individuo):
             centroideMinimo = i
 
     return(centroideMinimo)
-
-def seleccionRanking(poblacion, cantidad):
-    #MATI esto no hace nada concreto aun xd, ignoralo
-    poblacion.sort(key = lambda ind: ind.fitness)
-    puntos = list(range(1,len(poblacion)+1))
-    puntos.reverse()
-    ranking = []
-    print(puntos)
 
 
 def seleccionControlada(poblacion):
@@ -135,8 +139,7 @@ def seleccionControlada(poblacion):
             copias[i] = copias[i] + copia
             if sum(copias) == len(poblacion):
                 break
-    #print(copias)
-    #print(c) xdxdasd
+
 
 
 dataset = leerTxt("C:\\Franco\\Facultad\\IA\\dataset01.txt")
@@ -145,25 +148,29 @@ maxx = round(max(x))
 maxy = round(max(y))
 minx = round(min(x))
 miny = round(min(y))
-cantidadIndividuos = 10
+cantidadIndividuos = 300
 tamanoIndividuo = 3
 
 
-
-
-
-
 poblacion  = generarPoblacionInicial(cantidadIndividuos,3,minx,maxx,miny,maxy)
+
+
+
+
 for ind in poblacion:
     ind.setFitness()
 
 poblacion.sort(key = lambda individuo: individuo.fitness)
 
+
 seleccionControlada(poblacion)
 
 
-'''
-ind = poblacion[len(poblacion) - 1]
+
+print(poblacion[len(poblacion)-1].fitness)
+
+ind = poblacion[len(poblacion)-1]
+
 for i in range(len(ind.puntos)):
     if ind.puntos[i]:
         px,py = zip(*ind.puntos[i])
@@ -173,8 +180,8 @@ for centroide in ind.valor:
     px,py = centroide
     graficarPuntos(px, py)
 
-'''
 
-#pl.show()
+
+pl.show()
 
 
