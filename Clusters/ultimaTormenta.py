@@ -16,6 +16,7 @@ class Individuo(object):
         self.valor = None
         self.fitness = None
         self.puntos = []
+        self.copias = 0
 
     def setValorRandom(self,cantidad,minx,maxx,miny,maxy):
         individuo = []
@@ -50,9 +51,12 @@ class Individuo(object):
             #print('Fitness: ' + str(fitness))
 
         if fitness > Individuo.mayorFitness:
-            Individuo.mayorFitness = fitness
+            Individuo.mayorFitness = round(fitness,2)
         self.fitness = round(fitness,2)
         #print('Fitness: ' + str(fitness))
+
+    def corregirFitness(self):
+        self.fitness = Individuo.mayorFitness - self.fitness
 
     def setPuntos(self,dataset):
         for i in range(len(self.valor)):
@@ -115,6 +119,7 @@ def calcularCentroide(punto,individuo):
 
 
 def seleccionControlada(poblacion):
+
     n = len(poblacion)
     totalFitness = 0
 
@@ -139,8 +144,36 @@ def seleccionControlada(poblacion):
             copias[i] = copias[i] + copia
             if sum(copias) == len(poblacion):
                 break
+    for i in range(len(poblacion)):
+        poblacion[i].copias = copias[i]
+
+def seleccionElitista(poblacion,preservar):
+     pob = poblacion[0:preservar]
+     return pob
 
 
+def cruzaUnPunto(ind1, ind2):
+    size = len(ind1.valor)
+    cxpoint = random.randint(1, size - 1)
+    ind1.valor[cxpoint:], ind2.valor[cxpoint:] = ind2.valor[cxpoint:], ind1.valor[cxpoint:]
+
+
+    return ind1, ind2
+
+def ordenarPoblacion(poblacion, atr):
+    if atr == 'fitness':
+        poblacion.sort(key=lambda individuo: individuo.fitness)
+    if atr == 'copias':
+        poblacion.sort(key=lambda individuo: individuo.copias, reverse=True)
+
+def evaluarFitness(poblacion):
+    for ind in poblacion:
+        ind.setFitness()
+
+    ordenarPoblacion(poblacion, 'fitness')
+
+    for ind in poblacion:
+        ind.corregirFitness()
 
 dataset = leerTxt("C:\\Franco\\Facultad\\IA\\dataset01.txt")
 x, y = zip(*dataset)
@@ -148,27 +181,45 @@ maxx = round(max(x))
 maxy = round(max(y))
 minx = round(min(x))
 miny = round(min(y))
-cantidadIndividuos = 1000
+cantidadIndividuos = 10
 tamanoIndividuo = 2
-
+cantPreservar = 2
 
 poblacion  = generarPoblacionInicial(cantidadIndividuos,tamanoIndividuo,minx,maxx,miny,maxy)
 
-
-
-
-for ind in poblacion:
-    ind.setFitness()
-
-poblacion.sort(key = lambda individuo: individuo.fitness)
-
+evaluarFitness(poblacion)
 
 seleccionControlada(poblacion)
 
 
+poblacion = seleccionElitista(poblacion,cantPreservar)
 
-print(poblacion[len(poblacion)-1].fitness)
+pob = ''
+for ind in poblacion:
+    pob = pob + ' ' + str(ind)
 
+print(pob)
+
+# for ind in poblacion:
+#     print('Fitnes: '+str(ind.fitness)+' Copias: '+ str(ind.copias))
+
+# ind1 = poblacion[0]
+# ind2 = poblacion[1]
+
+
+# print(ind1.valor, ind1.fitness)
+# print(ind2.valor,ind2.fitness)
+# cruzaUnPunto(ind1,ind2)
+# ind1.setFitness()
+# ind2.setFitness()
+# ind1.corregirFitness()
+# ind2.corregirFitness()
+# print(ind1.valor,ind1.fitness)
+# print(ind2.valor,ind2.fitness)
+
+
+
+'''
 ind = poblacion[0]
 ind2 = poblacion[len(poblacion)-1]
 
@@ -179,13 +230,14 @@ ax1.set_title('Mejor individuo, Fitness: '+str(ind.fitness)+' -'+' Individuos: '
 
 ax2 = fig2.add_subplot(111)
 ax2.set_title('Peor individuo, Fitness: '+str(ind2.fitness)+' -'+' Individuos: '+str(cantidadIndividuos))
-print(ind.fitness)
+
 
 
 for i in range(len(ind.puntos)):
     if ind.puntos[i]:
         px,py = zip(*ind.puntos[i])
         ax1.scatter(px,py)
+
 
 for centroide in ind.valor:
     px,py = centroide
@@ -197,10 +249,12 @@ for i in range(len(ind2.puntos)):
         px,py = zip(*ind2.puntos[i])
         ax2.scatter(px,py)
 
-for centroide in ind.valor:
+
+for centroide in ind2.valor:
     px,py = centroide
     ax2.scatter(px,py)
 
 
 
 pl.show()
+'''
