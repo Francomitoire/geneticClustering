@@ -1,9 +1,8 @@
-import random
+
 import math
 import matplotlib.pyplot as pl
 import random
-import numpy as np
-import easygui
+
 
 class Individuo(object):
     """
@@ -175,7 +174,18 @@ def evaluarFitness(poblacion):
     for ind in poblacion:
         ind.corregirFitness()
 
-dataset = leerTxt("C:\\Franco\\Facultad\\IA\\dataset01.txt")
+def cruzaPoblacion(poblacion):
+    for i in range(len(poblacion)):
+        if ind.copias[i] != 0:
+            for j in ind.copias[i+1]:
+                if ind.copias[j] != 0:
+                    cruzaUnPunto(ind[i],ind[j])
+                    ind.copias[i] = ind.copias[i] - 1
+                    ind.copias[j] = ind.copias[j] -1
+
+
+
+dataset = leerTxt("C:\\Users\\Mati\\PycharmProjects\\geneticClustering\\Clusters\\datasets1.txt")
 x, y = zip(*dataset)
 maxx = round(max(x))
 maxy = round(max(y))
@@ -198,7 +208,7 @@ pob = ''
 for ind in poblacion:
     pob = pob + ' ' + str(ind)
 
-print(pob)
+
 
 # for ind in poblacion:
 #     print('Fitnes: '+str(ind.fitness)+' Copias: '+ str(ind.copias))
