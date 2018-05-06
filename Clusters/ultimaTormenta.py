@@ -55,7 +55,7 @@ class Individuo(object):
         #print('Fitness: ' + str(fitness))
 
     def corregirFitness(self):
-        self.fitness = Individuo.mayorFitness - self.fitness
+        self.fitness = 9999 - self.fitness
 
     def setPuntos(self,dataset):
         for i in range(len(self.valor)):
@@ -147,8 +147,28 @@ def seleccionControlada(poblacion):
         poblacion[i].copias = copias[i]
 
 def seleccionElitista(poblacion,preservar):
-     pob = poblacion[0:preservar]
-     return pob
+    seleccionControlada(poblacion)
+    pobElitista = poblacion[0:preservar]
+     # p = ''
+     # for ind in pobElitista:
+     #     p = p + str(ind.valor)
+     # print(p)
+    pobCruzar = poblacion[preservar:]
+     # p = ''
+     # for ind in pobCruzar:
+     #     p = p + str(ind.valor)
+     # print(p)
+    pobCruzada = cruzaPoblacion(pobCruzar)
+     # p = ''
+     # for ind in pobCruzada:
+     #     p = p + str(ind.valor)
+     # print(p)
+    pob = pobElitista + pobCruzada
+     # p = ''
+     # for ind in pob:
+     #     p = p + str(ind.valor)
+     # print(p)
+    return pob
 
 
 def cruzaUnPunto(ind1, ind2):
@@ -174,7 +194,8 @@ def evaluarFitness(poblacion):
     for ind in poblacion:
         ind.corregirFitness()
 
-def cruzaPoblacion(poblacion):
+def cruzaPoblacion(pob):
+    poblacion = pob
     while True:
         ordenarPoblacion(poblacion,'copias')
 
@@ -184,6 +205,7 @@ def cruzaPoblacion(poblacion):
             poblacion[1].copias = poblacion[1].copias - 1
         else:
             break
+    return poblacion
 
 
 dataset = leerTxt("C:\\Franco\\Facultad\\IA\\dataset01.txt")
@@ -192,62 +214,74 @@ maxx = round(max(x))
 maxy = round(max(y))
 minx = round(min(x))
 miny = round(min(y))
-cantidadIndividuos = 10
+cantidadIndividuos = 1000
 tamanoIndividuo = 2
-cantPreservar = 2
+cantPreservar = 0
+iteraciones = 20
+
+
+
 
 poblacion  = generarPoblacionInicial(cantidadIndividuos,tamanoIndividuo,minx,maxx,miny,maxy)
 
 evaluarFitness(poblacion)
 
-seleccionControlada(poblacion)
+p = ''
+f = ''
+poblacion.sort(key=lambda individuo: individuo.fitness, reverse=True)
 
-ordenarPoblacion(poblacion, 'copias')
-pob = ''
-copias = ''
-fitness = ''
 for ind in poblacion:
-    pob = pob + str(ind.valor) + '////'
-    copias = copias + str(ind.copias) + '////'
-    fitness = fitness +  str(ind.fitness)+ '////'
-print(pob)
-print(copias)
-print(fitness)
-cruzaPoblacion(poblacion)
-pob = ''
-copias = ''
-fitness = ''
+    p = p + str(ind.valor)
+    f = f + str(ind.fitness) + '/'
+print(p)
+print(f)
+print(poblacion[0].valor)
+print(poblacion[0].fitness)
+
+for i in range(iteraciones):
+    poblacion = seleccionElitista(poblacion,cantPreservar)
+
+p = ''
+f = ''
 evaluarFitness(poblacion)
 for ind in poblacion:
-    pob = pob + str(ind.valor) + '////'
-    copias = copias + str(ind.copias) + '////'
-    fitness = fitness + str(ind.fitness) + '////'
-print(pob)
-print(copias)
-print(fitness)
+    p = p + str(ind.valor)
+    f = f + str(ind.fitness) +'/'
+print(p)
+print(f)
+print(poblacion[0].valor)
+print(poblacion[0].fitness)
 
 
-
+#
+# ordenarPoblacion(poblacion, 'copias')
+# pob = ''
+# copias = ''
+# fitness = ''
 # for ind in poblacion:
-#     print('Fitnes: '+str(ind.fitness)+' Copias: '+ str(ind.copias))
+#     pob = pob + str(ind.valor) + '////'
+#     copias = copias + str(ind.copias) + '////'
+#     fitness = fitness +  str(ind.fitness)+ '////'
+# print(pob)
+# print(copias)
+# print(fitness)
+# cruzaPoblacion(poblacion)
+# pob = ''
+# copias = ''
+# fitness = ''
+# evaluarFitness(poblacion)
+# for ind in poblacion:
+#     pob = pob + str(ind.valor) + '////'
+#     copias = copias + str(ind.copias) + '////'
+#     fitness = fitness + str(ind.fitness) + '////'
+# print(pob)
+# print(copias)
+# print(fitness)
 
-# ind1 = poblacion[0]
-# ind2 = poblacion[1]
-
-
-# print(ind1.valor, ind1.fitness)
-# print(ind2.valor,ind2.fitness)
-# cruzaUnPunto(ind1,ind2)
-# ind1.setFitness()
-# ind2.setFitness()
-# ind1.corregirFitness()
-# ind2.corregirFitness()
-# print(ind1.valor,ind1.fitness)
-# print(ind2.valor,ind2.fitness)
 
 
 
-'''
+
 ind = poblacion[0]
 ind2 = poblacion[len(poblacion)-1]
 
@@ -285,4 +319,3 @@ for centroide in ind2.valor:
 
 
 pl.show()
-'''
