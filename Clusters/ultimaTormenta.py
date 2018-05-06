@@ -175,17 +175,18 @@ def evaluarFitness(poblacion):
         ind.corregirFitness()
 
 def cruzaPoblacion(poblacion):
-    for i in range(len(poblacion)):
-        if ind.copias[i] != 0:
-            for j in ind.copias[i+1]:
-                if ind.copias[j] != 0:
-                    cruzaUnPunto(ind[i],ind[j])
-                    ind.copias[i] = ind.copias[i] - 1
-                    ind.copias[j] = ind.copias[j] -1
+    while True:
+        ordenarPoblacion(poblacion,'copias')
+
+        if poblacion[0].copias != 0:
+            cruzaUnPunto(poblacion[0],poblacion[1])
+            poblacion[0].copias = poblacion[0].copias - 1
+            poblacion[1].copias = poblacion[1].copias - 1
+        else:
+            break
 
 
-
-dataset = leerTxt("C:\\Users\\Mati\\PycharmProjects\\geneticClustering\\Clusters\\datasets1.txt")
+dataset = leerTxt("C:\\Franco\\Facultad\\IA\\dataset01.txt")
 x, y = zip(*dataset)
 maxx = round(max(x))
 maxy = round(max(y))
@@ -201,12 +202,29 @@ evaluarFitness(poblacion)
 
 seleccionControlada(poblacion)
 
-
-poblacion = seleccionElitista(poblacion,cantPreservar)
-
+ordenarPoblacion(poblacion, 'copias')
 pob = ''
+copias = ''
+fitness = ''
 for ind in poblacion:
-    pob = pob + ' ' + str(ind)
+    pob = pob + str(ind.valor) + '////'
+    copias = copias + str(ind.copias) + '////'
+    fitness = fitness +  str(ind.fitness)+ '////'
+print(pob)
+print(copias)
+print(fitness)
+cruzaPoblacion(poblacion)
+pob = ''
+copias = ''
+fitness = ''
+evaluarFitness(poblacion)
+for ind in poblacion:
+    pob = pob + str(ind.valor) + '////'
+    copias = copias + str(ind.copias) + '////'
+    fitness = fitness + str(ind.fitness) + '////'
+print(pob)
+print(copias)
+print(fitness)
 
 
 
