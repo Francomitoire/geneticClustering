@@ -1,5 +1,4 @@
 from Individuo import Individuo
-import math
 import matplotlib.pyplot as pl
 import random
 
@@ -132,10 +131,10 @@ maxx = round(max(x))
 maxy = round(max(y))
 minx = round(min(x))
 miny = round(min(y))
-cantidadIndividuos = 2000
+cantidadIndividuos = 20
 tamanoIndividuo = 2
 cantPreservar = 0
-iteraciones = 20
+iteraciones = 2
 
 
 
