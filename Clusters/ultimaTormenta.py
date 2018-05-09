@@ -1,6 +1,7 @@
 import math
 import matplotlib.pyplot as pl
 import random
+import numpy as np
 
 
 class Individuo(object):
@@ -16,16 +17,18 @@ class Individuo(object):
         self.puntos = []
         self.copias = 0
 
-    def setValorRandom(self,cantidad,minx,maxx,miny,maxy):
+    def setValorRandom(self,cantidad,minx,maxx,miny,maxy,dataset):
         individuo = []
         for i in range(cantidad):
             x = random.randrange(minx, maxx)
             y = random.randrange(miny, maxy)
             individuo.append((x, y))
         self.valor = individuo
+        self.setPuntos(dataset)
 
-    def setValor(self,valor):
+    def setValor(self,valor,dataset):
         self.valor = valor
+        self.setPuntos(dataset)
 
     def setFitness(self):
         #arreglar fitnes, colocar fitness = 99999 y colocar los if si no procesa ningun dato que quede esa fitness
@@ -35,15 +38,20 @@ class Individuo(object):
         for i in range(len(self.valor)):
             errorCentroide = 0
             alelo = self.valor[i]
-            distancia = 0
+            # distancia = 0
+            distancia2 = 0
             puntos = self.puntos[i]
 
             # puntos[j] es un punto de todos los puntos que pertenecen al individuo i
             for j in range(len(puntos)):
                 punto = puntos[j]
-                distancia = distancia + math.hypot(alelo[0] - punto[0], alelo[1] - punto[1])
-
-            errorCentroide = distancia / len(self.puntos)
+                # distancia = distancia + math.hypot(alelo[0] - punto[0], alelo[1] - punto[1])
+                punto1 = np.array(punto)
+                punto2 = np.array(alelo)
+                distancia2 = distancia2 + np.linalg.norm(punto2 - punto1)
+            # print('dist1 '+ str(distancia) )
+            # print('dist2 ' + str(distancia2) )
+            errorCentroide = distancia2 / len(self.puntos)
             #print('error centroide '+str(i)+ ' :'+str(errorCentroide))
             fitness = fitness + errorCentroide
             #print('Fitness: ' + str(fitness))
@@ -57,6 +65,7 @@ class Individuo(object):
         self.fitness = 9999 - self.fitness
 
     def setPuntos(self,dataset):
+        del self.puntos[:]
         for i in range(len(self.valor)):
             self.puntos.append([])
 
@@ -92,12 +101,11 @@ def graficarPuntos(x, y):
     pl.scatter(x,y)
 
 
-def generarPoblacionInicial(tamanoPoblacion,tamanoIndividuo,minx,maxx,miny,maxy):
+def generarPoblacionInicial(tamanoPoblacion,tamanoIndividuo,minx,maxx,miny,maxy,dataset):
     poblacion = []
     for i in range(tamanoPoblacion):
         individuo = Individuo()
-        individuo.setValorRandom(tamanoIndividuo,minx,maxx,miny,maxy)
-        individuo.setPuntos(dataset)
+        individuo.setValorRandom(tamanoIndividuo,minx,maxx,miny,maxy,dataset)
         poblacion.append(individuo)
     return poblacion
 
@@ -148,32 +156,40 @@ def seleccionControlada(poblacion):
 def seleccionElitista(poblacion,preservar):
     seleccionControlada(poblacion)
     pobElitista = poblacion[0:preservar]
-     # p = ''
-     # for ind in pobElitista:
-     #     p = p + str(ind.valor)
-     # print(p)
+    # p = ''
+    # for ind in pobElitista:
+    #     p = p + str(ind.valor)
+    # print('pob elitista' + p)
     pobCruzar = poblacion[preservar:]
-     # p = ''
-     # for ind in pobCruzar:
-     #     p = p + str(ind.valor)
-     # print(p)
+    # p = ''
+    # for ind in pobCruzar:
+    #     p = p + str(ind.valor)
+    # print('pob a cruzar'+p)
     pobCruzada = cruzaPoblacion(pobCruzar)
-     # p = ''
-     # for ind in pobCruzada:
-     #     p = p + str(ind.valor)
-     # print(p)
+    # p = ''
+    # for ind in pobCruzada:
+    #     p = p + str(ind.valor)
+    # print('pob cruzada' + p)
     pob = pobElitista + pobCruzada
-     # p = ''
-     # for ind in pob:
-     #     p = p + str(ind.valor)
-     # print(p)
+    # p = ''
+    # for ind in pob:
+    #     p = p + str(ind.valor)
+    # print('pob final' + p)
     return pob
 
 
 def cruzaUnPunto(ind1, ind2):
+    # print(ind1.valor)
+    # print(ind2.valor)
     size = len(ind1.valor)
     cxpoint = random.randint(1, size - 1)
-    ind1.valor[cxpoint:], ind2.valor[cxpoint:] = ind2.valor[cxpoint:], ind1.valor[cxpoint:]
+    valor1 = ind1.valor[:cxpoint] + ind2.valor[cxpoint:]
+    valor2 = ind2.valor[:cxpoint] + ind1.valor[cxpoint:]
+    ind1.setValor(valor1,dataset)
+    ind2.setValor(valor2,dataset)
+    # ind1.valor[cxpoint:], ind2.valor[cxpoint:] = ind2.valor[cxpoint:], ind1.valor[cxpoint:]
+    # print(ind1.valor)
+    # print(ind2.valor)
 
 
     return ind1, ind2
@@ -213,18 +229,19 @@ maxx = round(max(x))
 maxy = round(max(y))
 minx = round(min(x))
 miny = round(min(y))
-cantidadIndividuos = 2000
+cantidadIndividuos = 100
 tamanoIndividuo = 2
 cantPreservar = 0
-iteraciones = 20
+iteraciones = 1
 
 
 
 
-poblacion  = generarPoblacionInicial(cantidadIndividuos,tamanoIndividuo,minx,maxx,miny,maxy)
+
+poblacion  = generarPoblacionInicial(cantidadIndividuos,tamanoIndividuo,minx,maxx,miny,maxy,dataset)
 
 evaluarFitness(poblacion)
-print('primer mejor' + str(poblacion[0].fitness))
+
 
 # p = ''
 # f = ''
@@ -255,7 +272,6 @@ evaluarFitness(poblacion)
 # print(f)
 # print(poblacion[0].valor)
 # print(poblacion[0].fitness)
-
 
 #
 # ordenarPoblacion(poblacion, 'copias')
