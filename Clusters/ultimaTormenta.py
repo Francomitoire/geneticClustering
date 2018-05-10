@@ -9,13 +9,15 @@ class Individuo(object):
     El atributo valor es un conjunto de centroides
     """
     #ESTE ATRIBUTO TIENE QUE TENER EL MAYOR FITNESS DE TODA LA POBLACION EN TO DO MOMENTO
-    mayorFitness = 0
+    # mayorFitness = 0
+
 
     def __init__(self):
         self.valor = None
         self.fitness = None
         self.puntos = []
-        self.copias = 0
+        # self.copias = 0
+
 
     def setValorRandom(self,cantidad,minx,maxx,miny,maxy,dataset):
         individuo = []
@@ -56,13 +58,13 @@ class Individuo(object):
             fitness = fitness + errorCentroide
             #print('Fitness: ' + str(fitness))
 
-        if fitness > Individuo.mayorFitness:
-            Individuo.mayorFitness = round(fitness,2)
-        self.fitness = round(fitness,2)
+        # if fitness > Individuo.mayorFitness:
+        #     Individuo.mayorFitness = round(fitness,2)
+        self.fitness = 1000 - round(fitness,2)
         #print('Fitness: ' + str(fitness))
 
-    def corregirFitness(self):
-        self.fitness = 9999 - self.fitness
+    # def corregirFitness(self):
+    #     self.fitness = 9999 - self.fitness
 
     def setPuntos(self,dataset):
         del self.puntos[:]
@@ -73,6 +75,7 @@ class Individuo(object):
             punto = dataset[i]
             posicionCentroide = calcularCentroide(punto,self)
             self.puntos[posicionCentroide].append(punto)
+
 
 
 #formato de la solucion o individuo: [(2,3),(5,1)(3,14)]
@@ -124,8 +127,9 @@ def calcularCentroide(punto,individuo):
     return(centroideMinimo)
 
 
-def seleccionControlada(poblacion):
-
+def seleccionControlada(pob):
+    poblacion = pob
+    pob_salida = []
     n = len(poblacion)
     totalFitness = 0
 
@@ -138,7 +142,12 @@ def seleccionControlada(poblacion):
 
     for i in range(len(poblacion)):
         c.append(poblacion[i].fitness/promFitness)
-        copias.append(int(c[i]))
+        cant= int(c[i])
+        copias.append(int(cant))
+        for j in range(cant):
+            indiv = Individuo()
+            indiv = poblacion[i]
+            pob_salida.append(indiv)
 
     while sum(copias) !=  len(poblacion):
 
@@ -147,35 +156,29 @@ def seleccionControlada(poblacion):
             copia = 0
             if random.uniform(0,1) <= probabilidad:
                 copia = 1
+                indiv = Individuo()
+                indiv = poblacion[i]
+                pob_salida.append(indiv)
             copias[i] = copias[i] + copia
             if sum(copias) == len(poblacion):
                 break
-    for i in range(len(poblacion)):
-        poblacion[i].copias = copias[i]
+    print('copias' + str(copias))
+    return pob_salida
 
-def seleccionElitista(poblacion,preservar):
-    seleccionControlada(poblacion)
-    pobElitista = poblacion[0:preservar]
-    # p = ''
-    # for ind in pobElitista:
-    #     p = p + str(ind.valor)
-    # print('pob elitista' + p)
-    pobCruzar = poblacion[preservar:]
-    # p = ''
-    # for ind in pobCruzar:
-    #     p = p + str(ind.valor)
-    # print('pob a cruzar'+p)
-    pobCruzada = cruzaPoblacion(pobCruzar)
-    # p = ''
-    # for ind in pobCruzada:
-    #     p = p + str(ind.valor)
-    # print('pob cruzada' + p)
-    pob = pobElitista + pobCruzada
-    # p = ''
-    # for ind in pob:
-    #     p = p + str(ind.valor)
-    # print('pob final' + p)
-    return pob
+def seleccion(poblacion,preservar,porcentaje):
+    cant = int(len(poblacion)*porcentaje)
+    if cant > preservar:
+        pob_elitista = poblacion[0:preservar]
+        pob_controlada = seleccionControlada(poblacion[preservar:cant])
+        pob_salida = pob_elitista + pob_controlada
+        ordenarPoblacion(pob_salida,'fitness')
+        return pob_salida
+    elif cant == preservar:
+        pob_salida = poblacion[0:preservar]
+        ordenarPoblacion(pob_salida, 'fitness')
+        return pob_salida
+    else:
+        print('La cantidad a preservar debe ser menor o igual a la cantidad total a seleccionar')
 
 
 def cruzaUnPunto(ind1, ind2):
@@ -196,7 +199,7 @@ def cruzaUnPunto(ind1, ind2):
 
 def ordenarPoblacion(poblacion, atr):
     if atr == 'fitness':
-        poblacion.sort(key=lambda individuo: individuo.fitness)
+        poblacion.sort(key=lambda individuo: individuo.fitness, reverse=True)
     if atr == 'copias':
         poblacion.sort(key=lambda individuo: individuo.copias, reverse=True)
 
@@ -206,8 +209,8 @@ def evaluarFitness(poblacion):
 
     ordenarPoblacion(poblacion, 'fitness')
 
-    for ind in poblacion:
-        ind.corregirFitness()
+    # for ind in poblacion:
+    #     ind.corregirFitness()
 
 def cruzaPoblacion(pob):
     poblacion = pob
@@ -222,6 +225,15 @@ def cruzaPoblacion(pob):
             break
     return poblacion
 
+def imprimirPoblacion(pob):
+    # copias = 0
+    ordenarPoblacion(pob,'fitness')
+    for i in range(len(pob)):
+        print('Fitness: '+ str(pob[i].fitness))
+        # copias = copias + pob[i].copias
+    print('Cant individuos: ' + str(len(pob)))
+    # print('Cant copias: ' + str(copias))
+
 
 dataset = leerTxt("C:\\Franco\\Facultad\\IA\\dataset01.txt")
 x, y = zip(*dataset)
@@ -229,8 +241,8 @@ maxx = round(max(x))
 maxy = round(max(y))
 minx = round(min(x))
 miny = round(min(y))
-cantidadIndividuos = 100
-tamanoIndividuo = 2
+cantidadIndividuos = 10
+tamanoIndividuo = 3
 cantPreservar = 0
 iteraciones = 1
 
@@ -238,9 +250,17 @@ iteraciones = 1
 
 
 
-poblacion  = generarPoblacionInicial(cantidadIndividuos,tamanoIndividuo,minx,maxx,miny,maxy,dataset)
+pob_anterior  = generarPoblacionInicial(cantidadIndividuos,tamanoIndividuo,minx,maxx,miny,maxy,dataset)
+pob_siguiente = []
 
-evaluarFitness(poblacion)
+evaluarFitness(pob_anterior)
+imprimirPoblacion(pob_anterior)
+
+for i in range(iteraciones):
+    pob_siguiente = seleccion(pob_anterior,0,1)
+
+print()
+imprimirPoblacion(pob_siguiente)
 
 
 # p = ''
@@ -257,11 +277,7 @@ evaluarFitness(poblacion)
 #
 
 
-for ind in range(iteraciones):
-    poblacion = seleccionElitista(poblacion,cantPreservar)
 
-
-evaluarFitness(poblacion)
 
 # p = ''
 # f = ''
@@ -302,41 +318,47 @@ evaluarFitness(poblacion)
 
 
 
-individuo2 = poblacion[0]
-individuo1 = poblacion[len(poblacion)-1]
-print(poblacion[0].fitness)
-
-fig1 = pl.figure()
-fig2 = pl.figure()
-ax1 = fig1.add_subplot(111)
-ax1.set_title('Peor individuo, Fitness: '+str(individuo1.fitness)+' -'+' Individuos: '+str(cantidadIndividuos))
-
-ax2 = fig2.add_subplot(111)
-ax2.set_title('Mejor individuo, Fitness: '+str(individuo2.fitness)+' -'+' Individuos: '+str(cantidadIndividuos))
 
 
 
-for i in range(len(individuo1.puntos)):
-    if individuo1.puntos[i]:
-        px,py = zip(*individuo1.puntos[i])
-        ax1.scatter(px,py)
-
-
-for centroide in individuo1.valor:
-    px,py = centroide
-    ax1.scatter(px,py)
-
-
-for i in range(len(individuo2.puntos)):
-    if individuo2.puntos[i]:
-        px,py = zip(*individuo2.puntos[i])
-        ax2.scatter(px,py)
-
-
-for centroide in individuo2.valor:
-    px,py = centroide
-    ax2.scatter(px,py)
 
 
 
-pl.show()
+
+#------------------------------ Graficos
+
+# individuo2 = pob_siguiente[0]
+# individuo1 = pob_siguiente[len(pob_siguiente)-1]
+#
+# fig1 = pl.figure()
+# fig2 = pl.figure()
+# ax1 = fig1.add_subplot(111)
+# ax1.set_title('Peor individuo, Fitness: '+str(individuo1.fitness)+' -'+' Individuos: '+str(cantidadIndividuos))
+#
+# ax2 = fig2.add_subplot(111)
+# ax2.set_title('Mejor individuo, Fitness: '+str(individuo2.fitness)+' -'+' Individuos: '+str(cantidadIndividuos))
+#
+#
+#
+# for i in range(len(individuo1.puntos)):
+#     if individuo1.puntos[i]:
+#         px,py = zip(*individuo1.puntos[i])
+#         ax1.scatter(px,py)
+#
+#
+# for centroide in individuo1.valor:
+#     px,py = centroide
+#     ax1.scatter(px,py)
+#
+#
+# for i in range(len(individuo2.puntos)):
+#     if individuo2.puntos[i]:
+#         px,py = zip(*individuo2.puntos[i])
+#         ax2.scatter(px,py)
+#
+#
+# for centroide in individuo2.valor:
+#     px,py = centroide
+#     ax2.scatter(px,py)
+#
+# pl.show()
