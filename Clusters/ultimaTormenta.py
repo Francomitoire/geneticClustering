@@ -20,14 +20,18 @@ class Individuo(object):
         self.puntos = []
         # self.copias = 0
 
-
-    def setValorRandom(self,cantidad,minx,maxx,miny,maxy,dataset):
-        individuo = []
-        for i in range(cantidad):
-            x = random.randrange(minx, maxx)
-            y = random.randrange(miny, maxy)
-            individuo.append((x, y))
-        self.valor = individuo
+    def setValorRandom(self, tam, mins, maxs, dimensiones, dataset):
+        valor = []
+        # para cada centroide del individuo
+        for j in range(tam):
+            cent_lt = []
+            # para cada elemento del centroide seteo un valor random
+            for i in range(dimensiones):
+                x = random.randrange(mins[i], maxs[i])
+                cent_lt.append(x)
+            cent = tuple(cent_lt)
+            valor.append(cent)
+        self.valor = valor
         self.setPuntos(dataset)
 
     def setValor(self,valor):
@@ -106,11 +110,11 @@ def graficarPuntos(x, y):
     pl.scatter(x,y)
 
 
-def generarPoblacionInicial(tamanoPoblacion,tamanoIndividuo,minx,maxx,miny,maxy,dataset):
+def generarPoblacionInicial(tamanoPoblacion,tamanoIndividuo,mins,maxs,dimensiones,dataset):
     poblacion = []
     for i in range(tamanoPoblacion):
         individuo = Individuo()
-        individuo.setValorRandom(tamanoIndividuo,minx,maxx,miny,maxy,dataset)
+        individuo.setValorRandom(tamanoIndividuo,mins,maxs,dimensiones,dataset)
         poblacion.append(individuo)
     return poblacion
 
@@ -118,10 +122,13 @@ def generarPoblacionInicial(tamanoPoblacion,tamanoIndividuo,minx,maxx,miny,maxy,
 def calcularCentroide(punto,individuo):
     centroideMinimo = 0
     centroide = individuo.valor[0]
-    min = math.hypot(punto[0]-centroide[0],punto[1]-centroide[1])
+    punto1 = np.array(punto)
+    punto2 = np.array(centroide)
+    min = np.linalg.norm(punto2 - punto1)
     for i in range(1,len(individuo.valor)):
         centroide = individuo.valor[i]
-        dist = math.hypot(punto[0]-centroide[0],punto[1]-centroide[1])
+        punto2 = np.array(centroide)
+        dist = np.linalg.norm(punto2 - punto1)
         if (dist < min):
             min = dist
             centroideMinimo = i
@@ -199,10 +206,6 @@ def evaluarFitness(poblacion):
     for ind in poblacion:
         ind.setFitness()
 
-
-    # for ind in poblacion:
-    #     ind.corregirFitness()
-
 def cruzaPoblacion(poblacion, porcentaje):
     #arreglar, que si la cantidad a cruzar es 4, no busque solo en [0,1,2,3] sino en toda la poblacion [0,...,len(pob)]
     '''Elegir siempre un porcentaje que de una cantidad par de individuos'''
@@ -274,49 +277,34 @@ def restar_listas(lt1, lt2):
 
 
 dataset = leerTxt("C:\\Franco\\Facultad\\IA\\dataset01.txt")
-x, y = zip(*dataset)
-maxx = round(max(x))
-maxy = round(max(y))
-minx = round(min(x))
-miny = round(min(y))
+puntos = []
+puntos = list(zip(*dataset))
+dimensiones = len(puntos)
+mins = []
+maxs = []
+for dim in range(len(puntos)):
+    mins.append(round(min(puntos[dim])))
+    maxs.append(round(max(puntos[dim])))
+
 cantidadIndividuos = 10
 tamanoIndividuo = 2
-iteraciones = 1000
+iteraciones = 50
 cantPreservar = 1
 porc_seleccion = 0.2
 porc_cruza = 0.8
 porc_mutacion = 0
 
-#
-# pob_anterior = []
-# pob_siguiente = []
-#
-# pob_anterior  = generarPoblacionInicial(cantidadIndividuos,tamanoIndividuo,minx,maxx,miny,maxy,dataset)
-# evaluarFitness(pob_anterior)
-# print('Poblacion anterior')
-# imprimirPoblacion(pob_anterior)
-#
-#
-#
-# print()
-#
-# for i in range(iteraciones):
-#     pob_siguiente = seleccion(pob_anterior,cantPreservar,porc_seleccion)
-#     pob_siguiente = pob_siguiente + cruzaPoblacion(pob_anterior,porc_cruza)
-#     evaluarFitness(pob_siguiente)
-#
-#     pob_anterior = pob_siguiente
-#
-#
-#
-#
-#
-# print()
-# print('pob sig')
-# imprimirPoblacion(pob_siguiente)
 
 
-pob_anterior  = generarPoblacionInicial(cantidadIndividuos,tamanoIndividuo,minx,maxx,miny,maxy,dataset)
+
+
+
+
+pob_anterior = []
+pob_siguiente = []
+
+
+pob_anterior  = generarPoblacionInicial(cantidadIndividuos,tamanoIndividuo,mins,maxs,dimensiones,dataset)
 evaluarFitness(pob_anterior)
 imprimirPoblacion(pob_anterior)
 ind_viejo = copy(pob_anterior[0])
@@ -328,51 +316,10 @@ for i in range(iteraciones):
     pob_anterior = pob_sig
 
 
-
+print()
 imprimirPoblacion(pob_sig)
 ind_nuevo = pob_sig[0]
 print(ind_nuevo.fitness)
-
-
-
-
-
-
-# p = ''
-# f = ''
-# for i in poblacion:
-#     p = p + str(i.valor)
-#     f = f + str(i.fitness) +'/'
-# print(p)
-# print(f)
-# print(poblacion[0].valor)
-# print(poblacion[0].fitness)
-
-#
-# ordenarPoblacion(poblacion, 'copias')
-# pob = ''
-# copias = ''
-# fitness = ''
-# for ind in poblacion:
-#     pob = pob + str(ind.valor) + '////'
-#     copias = copias + str(ind.copias) + '////'
-#     fitness = fitness +  str(ind.fitness)+ '////'
-# print(pob)
-# print(copias)
-# print(fitness)
-# cruzaPoblacion(poblacion)
-# pob = ''
-# copias = ''
-# fitness = ''
-# evaluarFitness(poblacion)
-# for ind in poblacion:
-#     pob = pob + str(ind.valor) + '////'
-#     copias = copias + str(ind.copias) + '////'
-#     fitness = fitness + str(ind.fitness) + '////'
-# print(pob)
-# print(copias)
-# print(fitness)
-
 
 
 
@@ -386,39 +333,39 @@ print(ind_nuevo.fitness)
 
 #------------------------------ Graficos
 
-
-individuo1 = ind_nuevo
-individuo2 = ind_viejo
-
-fig1 = pl.figure()
-fig2 = pl.figure()
-ax1 = fig1.add_subplot(111)
-ax1.set_title('Nuevo individuo, Fitness: '+str(individuo1.fitness)+' -'+' Individuos: '+str(cantidadIndividuos))
-
-ax2 = fig2.add_subplot(111)
-ax2.set_title('Viejo individuo, Fitness: '+str(individuo2.fitness)+' -'+' Individuos: '+str(cantidadIndividuos))
-
-
-
-for i in range(len(individuo1.puntos)):
-    if individuo1.puntos[i]:
-        px,py = zip(*individuo1.puntos[i])
-        ax1.scatter(px,py)
-
-
-for centroide in individuo1.valor:
-    px,py = centroide
-    ax1.scatter(px,py)
-
-
-for i in range(len(individuo2.puntos)):
-    if individuo2.puntos[i]:
-        px,py = zip(*individuo2.puntos[i])
-        ax2.scatter(px,py)
-
-
-for centroide in individuo2.valor:
-    px,py = centroide
-    ax2.scatter(px,py)
-
-pl.show()
+#
+# individuo1 = ind_nuevo
+# individuo2 = ind_viejo
+#
+# fig1 = pl.figure()
+# fig2 = pl.figure()
+# ax1 = fig1.add_subplot(111)
+# ax1.set_title('Nuevo individuo, Fitness: '+str(individuo1.fitness)+' -'+' Individuos: '+str(cantidadIndividuos))
+#
+# ax2 = fig2.add_subplot(111)
+# ax2.set_title('Viejo individuo, Fitness: '+str(individuo2.fitness)+' -'+' Individuos: '+str(cantidadIndividuos))
+#
+#
+#
+# for i in range(len(individuo1.puntos)):
+#     if individuo1.puntos[i]:
+#         px,py = zip(*individuo1.puntos[i])
+#         ax1.scatter(px,py)
+#
+#
+# for centroide in individuo1.valor:
+#     px,py = centroide
+#     ax1.scatter(px,py)
+#
+#
+# for i in range(len(individuo2.puntos)):
+#     if individuo2.puntos[i]:
+#         px,py = zip(*individuo2.puntos[i])
+#         ax2.scatter(px,py)
+#
+#
+# for centroide in individuo2.valor:
+#     px,py = centroide
+#     ax2.scatter(px,py)
+#
+# pl.show()
