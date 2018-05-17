@@ -1,0 +1,66 @@
+def mutacionInvididuo(poblacion, porc_mutacion,mins,maxs):
+#seleccionar individuo al azar
+    pob_salida = []
+    cant_indiv = int(len(poblacion) * porc_mutacion)
+    indices = lista_de_enteros(0, len(poblacion))
+    lt = []
+    for i in range(cant_indiv):
+        x = random.choice(indices)
+        indices = restar_listas(indices, [x])
+        lt = lt + [x]
+    while(True):
+        rd = random.choice(lt)
+        lt = restar_listas(lt, [rd])
+        ind = copy(poblacion[rd])
+        print(ind.valor)
+        mutar(ind)
+        pob_salida.append((ind))
+        if not lt:
+            break
+        return pob_salida
+
+def mutar(ind):
+    cant_atributos = len(ind.valor)
+    new_atributo = 0
+    puntero = random.randrange(0,cant_atributos - 1)
+    #print('///')
+    print (puntero, 'Puntero del atributo del individuo')
+    atributo = ind.valor[puntero]
+    print(atributo)
+    #mutar
+    cant_alelos = len(ind.valor[puntero])
+    print(cant_alelos, 'Cantidad de alelos del atributo')
+    a = []
+    for i in range(0,cant_alelos):
+        a.append(random.randrange(mins[i],maxs[i]))
+    a = tuple(a)
+    new_atributo = a
+    print(new_atributo, 'Generador de nuevo atributo')
+    ind.valor[puntero] = new_atributo
+    print(ind.valor, 'Injeccion en el individuo del atributo generado')
+    return ind
+    
+    cantidadIndividuos = 10
+tamanoIndividuo = 4
+iteraciones = 30
+cantPreservar = 1
+porc_seleccion = 0.2
+porc_cruza = 0.8
+porc_mutacion = 0.10
+
+
+
+
+
+
+
+pob_anterior = []
+pob_siguiente = []
+
+
+pob_anterior  = generarPoblacionInicial(cantidadIndividuos,tamanoIndividuo,mins,maxs,dimensiones,dataset)
+evaluarFitness(pob_anterior)
+#imprimirPoblacion(pob_anterior)
+#ind_viejo = copy(pob_anterior[0])
+#print(ind_viejo.fitness)
+mut = mutacionInvididuo(pob_anterior,porc_mutacion,mins,maxs)
