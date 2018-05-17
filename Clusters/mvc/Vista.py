@@ -7,8 +7,12 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QFileDialog
+
 
 class Ui_Form(object):
+
+
     def setupUi(self, Form):
         Form.setObjectName("Form")
         Form.resize(1062, 756)
@@ -152,7 +156,7 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "Form"))
+        Form.setWindowTitle(_translate("Form", "Algoritmos Geneticos para Clustering"))
         self.groupBox.setTitle(_translate("Form", "Datos de entrada"))
         self.label_2.setText(_translate("Form", "Seleccione cantidad de clases a encontrar"))
         self.btn_archivo.setText(_translate("Form", "..."))
@@ -162,6 +166,7 @@ class Ui_Form(object):
         self.radiobtn_graficar.setText(_translate("Form", "Graficar"))
         self.btn_clasificar.setText(_translate("Form", "Clasificar"))
         self.btn_salir.setText(_translate("Form", "Salir"))
+
 
 
 if __name__ == "__main__":

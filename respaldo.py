@@ -143,26 +143,18 @@ def seleccionControlada(pob):
     pob_salida = []
     n = len(poblacion)
     totalFitness = 0
-    print('len pob entrada')
-    print(len(pob))
-    #calculo promedio fitness
+
     for ind in poblacion:
         totalFitness = totalFitness + ind.fitness
+
     promFitness = totalFitness / n
-    #------------
-    # si promfitnes == 0  quiere decir que hay solo un individuo y es el peor, entonces lo pasamos directo CHARLARLO CON MATI
-    if promFitness == 0 :
-        pob_salida = poblacion
-        return pob_salida
     c = []
     copias = []
 
     for i in range(len(poblacion)):
-        #guardo la parte entera del fitness sobre el promedio de fitness
         c.append(poblacion[i].fitness/promFitness)
-        cant = int(c[i])
-        #asigno esa parte entera en copias
-        copias.append(cant)
+        cant= int(c[i])
+        copias.append(int(cant))
         for j in range(cant):
             indiv = poblacion[i]
             pob_salida.append(indiv)
@@ -196,7 +188,6 @@ def seleccion(poblacion,preservar,porcentaje):
     if cant > preservar:
         for i in range(preservar):
             pob_elitista.append(poblacion[i])
-
         pob_controlada = seleccionControlada(poblacion[preservar:cant])
         pob_salida = pob_elitista + pob_controlada
         return pob_salida
@@ -261,6 +252,7 @@ def cruzaPoblacion(poblacion, porcentaje):
         x = random.choice(indices)
         indices = restar_listas(indices, [x])
         lt = lt + [x]
+
     while True:
         rand1 = random.choice(lt)
         lt = restar_listas(lt, [rand1])
@@ -332,12 +324,12 @@ for dim in range(len(puntos)):
     mins.append(round(min(puntos[dim])))
     maxs.append(round(max(puntos[dim])))
 
-cantidadIndividuos = 2
+cantidadIndividuos = 100
 tamanoIndividuo = 4
-iteraciones = 2
+iteraciones = 5
 cantPreservar = 1
 porc_seleccion = 1
-porc_cruza = 0.2
+porc_cruza = 0
 porc_mutacion = 0
 dimx_graficar = 0
 dimy_graficar = 1
@@ -359,7 +351,7 @@ for i in range(iteraciones):
     pob_anterior = pob_sig
 
 
-# imprimirPoblacion(pob_sig)
+imprimirPoblacion(pob_sig)
 ind_nuevo = pob_sig[0]
 
 

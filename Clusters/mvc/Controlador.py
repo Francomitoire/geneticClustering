@@ -2,6 +2,7 @@ from Individuo import Individuo
 import matplotlib.pyplot as pl
 import random
 
+
 def leerTxt(path):
     '''Lee un txt donde cada linea esta conformada por 2 numeros y convierte cada linea en una tupla de 2 elementos'''
     with open(path, 'r') as file:
@@ -241,4 +242,4 @@ for centroide in individuo2.valor:
 
 
 
-pl.show()
+# pl.show()
