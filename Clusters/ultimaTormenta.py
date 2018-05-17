@@ -8,7 +8,7 @@ import warnings
 
 class Individuo(object):
     """
-    El atributo valor es un conjunto de centroides
+    El atributo valor es un conjunto de centroides GATOOOOOO
     """
     #ESTE ATRIBUTO TIENE QUE TENER EL MAYOR FITNESS DE TODA LA POBLACION EN TO DO MOMENTO
     # mayorFitness = 0
@@ -297,7 +297,7 @@ def cruzaUnPunto(i1, i2):
     return ind1, ind2
 
 def imprimirPoblacion(pob):
-    # copias = 0 
+    # copias = 0
     ordenarPoblacion(pob,'fitness')
     for i in range(len(pob)):
         print('Valor: '+str(pob[i].valor) + ' Fitness: '+ str(pob[i].fitness))
