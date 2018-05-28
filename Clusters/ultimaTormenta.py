@@ -422,5 +422,5 @@ def mainApp(cantidadIndividuos,tamanoIndividuo):
 
     pl.show()
 
-
+#asd
 # mainApp(10,3)
