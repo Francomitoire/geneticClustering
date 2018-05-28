@@ -41,11 +41,11 @@
                     <form method="POST" role="form" class="form" accept-charset="UTF-8" enctype="multipart/form-data" action="{{url_for('clasificar')}}" id="parametros"id="parametros" style="text-align:center;margin:0 auto;margin-bottom:20px;border-color:#495057;">
                         <div class="form-row" style="text-align:justify;">
                             <div class="col">
-								
+
 								<label class="col-form-label">Cantidad de Clases:</label>
 								<hr/>
-								
-								<label class="col-form-label">Tamaño de Población:</label>
+
+								<label class="col-form-label">Cantidad de Generaciones:</label>
 								<hr/>
 								<label class="col-form-label">Primera dimensión a graficar:</label>
 								<hr/>
@@ -53,23 +53,23 @@
 								<hr/>
 							</div>
                             <div class="col-md-3">
-								
+
 									<input class="form-control" type="number" name="cantClases" required="" min="2" max="2000"  style="border-color:#495057;">
 									<hr/>
-									<input class="form-control" type="number" name="tamPoblacion" required="" min="2" max="2000"  style="border-color:#495057;">
+									<input class="form-control" type="number" name="cantIteraciones" required="" min="2" max="2000"  style="border-color:#495057;">
 									<hr/>
 									<input class="form-control" type="number" name="dimension1" value="1" required="" min="1" max="20"  style="border-color:#495057;">
 									<hr/>
 									<input class="form-control" type="number" name="dimension2" value="2" required="" min="2" max="20"  style="border-color:#495057;">
 									<hr/>
-								
+
 							</div>
-							
-							
+
+
                         </div>
 						<div style="text-align:center">
 						<button class="btn btn-primary" action="/clasificar" type="submit" data-bs-hover-animate="pulse" style="width:120px;height:initial-scale;padding:8px">Clasificar</button>
-						<!--<img src="static/img/ajax-loading.gif" id="img" style="display:none" >-->
+
 						</div>
 
                     </form>
@@ -78,11 +78,11 @@
                     <form>
                         <h5 style="text-align:left;">Algoritmos Genéticos para el análisis de Clusters</h5>
                         <p>Programa que realiza análisis de Clusters mediante la utilización de una implementación de Algoritmo Genético.
-						
+
 						<p>
 						Una vez que seleccione y cargue el dataset, indique los parámetros de entrada que desea, para realizar una clasificación del set de datos.
 						</p>
-						
+
 						</p>
 						<p>
 						Las Dimensiones van a ser aquellas que desea representar gráficamente.

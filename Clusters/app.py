@@ -27,8 +27,8 @@ def allowed_file(filename):
 def upload_file():
     if request.method == 'POST':
         if 'file' not in request.files:
-            flash('No selecciono ningun archivo')
-            return render_template('clasificar.html')
+
+            return render_template('index.html')
 
         f = request.files['file']
         if f.filename == '':
@@ -38,7 +38,8 @@ def upload_file():
         if f and allowed_file(f.filename):
             filename = "newdataset.txt"
             f.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return render_template('index.html')
+            flash('DataSet Cargado Correctamente')
+            return render_template('clasificar.html')
         else:
             flash('Tipo de archivo incorrecto')
             return render_template('index.html')
@@ -50,10 +51,10 @@ def upload_file():
 def clasificar():
     global solution
     if request.method == 'POST':
-        cantidadIndividuos = int(request.form.get('tamPoblacion'))
+        cantidadIteraciones = int(request.form.get('cantIteraciones'))
         tamanoIndividuo = int(request.form.get('cantClases'))
-        solution = ultimaTormenta.mainApp(cantidadIndividuos,tamanoIndividuo)
-    return render_template('index.html', solution=solution)
+        solution = ultimaTormenta.mainApp(cantidadIteraciones,tamanoIndividuo)
+    return render_template('clasificar.html', solution=solution)
 
 # def analizar():
 #     if request.method == 'POST':

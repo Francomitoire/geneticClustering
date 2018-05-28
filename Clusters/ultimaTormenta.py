@@ -316,14 +316,14 @@ def restar_listas(lt1, lt2):
     b = lt2
     a = [item for item in a if item not in b]
     return a
-def mainApp(cantidadIndividuos,tamanoIndividuo):
+def mainApp(cantidadIteraciones,tamanoIndividuo):
     dataset = leerTxt("C:\\Users\\Mati\\PycharmProjects\\geneticClustering\\Clusters\\static\\archivos\\newdataset.txt")
     puntos = []
     puntos = list(zip(*dataset))
     puntos_a_graficar = []
     puntos_a_graficar.append(puntos[0])
     puntos_a_graficar.append(puntos[1])
-
+    cantidadIndividuos = 60
     dimensiones = len(puntos)
     mins = []
     maxs = []
@@ -360,7 +360,7 @@ def mainApp(cantidadIndividuos,tamanoIndividuo):
     ind_viejo = copy(pob_anterior[0])
 
     # tratar convergencia( ver si fitness no modifica % del anterior, si no mejora un % converge > return )
-    for i in range(iteraciones):
+    for i in range(cantidadIteraciones):
         # print('iteracion '+str(i))
         pob_siguiente = seleccion(pob_anterior,1,porc_seleccion)
         evaluarFitness(pob_siguiente)
