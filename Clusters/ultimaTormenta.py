@@ -143,8 +143,8 @@ def seleccionControlada(pob):
     pob_salida = []
     n = len(poblacion)
     totalFitness = 0
-    print('len pob entrada')
-    print(len(pob))
+    #print('len pob entrada')
+    #print(len(pob))
     #calculo promedio fitness
     for ind in poblacion:
         totalFitness = totalFitness + ind.fitness
@@ -300,9 +300,9 @@ def imprimirPoblacion(pob):
     # copias = 0
     ordenarPoblacion(pob,'fitness')
     for i in range(len(pob)):
-        print('Valor: '+str(pob[i].valor) + ' Fitness: '+ str(pob[i].fitness))
+         print('Valor: '+str(pob[i].valor) + ' Fitness: '+ str(pob[i].fitness))
         # copias = copias + pob[i].copias
-    print('Cant individuos: ' + str(len(pob)))
+    #print('Cant individuos: ' + str(len(pob)))
     # print('Cant copias: ' + str(copias))
 
 def lista_de_enteros(a, b):
@@ -316,105 +316,111 @@ def restar_listas(lt1, lt2):
     b = lt2
     a = [item for item in a if item not in b]
     return a
+def mainApp(cantidadIndividuos,tamanoIndividuo):
+    dataset = leerTxt("C:\\Users\\Mati\\PycharmProjects\\geneticClustering\\Clusters\\static\\archivos\\newdataset.txt")
+    puntos = []
+    puntos = list(zip(*dataset))
+    puntos_a_graficar = []
+    puntos_a_graficar.append(puntos[0])
+    puntos_a_graficar.append(puntos[1])
+
+    dimensiones = len(puntos)
+    mins = []
+    maxs = []
+    for dim in range(len(puntos)):
+        mins.append(round(min(puntos[dim])))
+        maxs.append(round(max(puntos[dim])))
+
+    # cantidadIndividuos = 10
+    # tamanoIndividuo = 3
+    iteraciones = 2
+    cantPreservar = 1
+    porc_seleccion = 1
+    porc_cruza = 0.2
+    porc_mutacion = 0
+    dimx_graficar = 0
+    dimy_graficar = 1
 
 
-dataset = leerTxt("C:\\Franco\\Facultad\\IA\\dataset01.txt")
-puntos = []
-puntos = list(zip(*dataset))
-puntos_a_graficar = []
-puntos_a_graficar.append(puntos[0])
-puntos_a_graficar.append(puntos[1])
-
-dimensiones = len(puntos)
-mins = []
-maxs = []
-for dim in range(len(puntos)):
-    mins.append(round(min(puntos[dim])))
-    maxs.append(round(max(puntos[dim])))
-
-cantidadIndividuos = 2
-tamanoIndividuo = 4
-iteraciones = 2
-cantPreservar = 1
-porc_seleccion = 1
-porc_cruza = 0.2
-porc_mutacion = 0
-dimx_graficar = 0
-dimy_graficar = 1
-
-
-pob_anterior = []
-pob_siguiente = []
-
-
-pob_anterior  = generarPoblacionInicial(cantidadIndividuos,tamanoIndividuo,mins,maxs,dimensiones,dataset)
-evaluarFitness(pob_anterior)
-# imprimirPoblacion(pob_anterior)
-ind_viejo = copy(pob_anterior[0])
-
-for i in range(iteraciones):
-    # print('iteracion '+str(i))
-    pob_sig = seleccion(pob_anterior,1,porc_seleccion)
-    evaluarFitness(pob_sig)
-    pob_anterior = pob_sig
-
-
-# imprimirPoblacion(pob_sig)
-ind_nuevo = pob_sig[0]
+    pob_anterior = []
+    pob_siguiente = []
 
 
 
+    mins = []
+    maxs = []
+    for dim in range(len(puntos)):
+        mins.append(round(min(puntos[dim])))
+        maxs.append(round(max(puntos[dim])))
+
+
+    pob_anterior  = generarPoblacionInicial(cantidadIndividuos,tamanoIndividuo,mins,maxs,dimensiones,dataset)
+    evaluarFitness(pob_anterior)
+    # imprimirPoblacion(pob_anterior)
+    ind_viejo = copy(pob_anterior[0])
+
+    # tratar convergencia( ver si fitness no modifica % del anterior, si no mejora un % converge > return )
+    for i in range(iteraciones):
+        # print('iteracion '+str(i))
+        pob_siguiente = seleccion(pob_anterior,1,porc_seleccion)
+        evaluarFitness(pob_siguiente)
+        pob_anterior = pob_siguiente
+
+    imprimirPoblacion(pob_siguiente)
+    ind_nuevo = pob_siguiente[0]
+    #print(pob_sig[0].valor)
+    #print(pob_anterior[0].valor)
+    # return ind_nuevo, ind_viejo
+
+    #------------------------------ Graficos
+
+
+    ind = ind_nuevo
+    ind2 = ind_viejo
+
+
+    fig1 = pl.figure()
+    fig2 = pl.figure()
+    ax1 = fig1.add_subplot(111)
+    ax1.set_title('Nuevo individuo, Fitness: '+str(ind.fitness)+' -'+' Individuos: '+str(cantidadIndividuos))
+
+    ax2 = fig2.add_subplot(111)
+    ax2.set_title('Viejo individuo, Fitness: '+str(ind2.fitness)+' -'+' Individuos: '+str(cantidadIndividuos))
 
 
 
 
 
-#------------------------------ Graficos
+    for i in range(len(ind.puntos)):
+        if ind.puntos[i]:
+            puntos_por_dimension = zip(*ind.puntos[i])
+            puntos_por_dimension = list(puntos_por_dimension)
+            px = puntos_por_dimension[dimx_graficar]
+            py = puntos_por_dimension[dimy_graficar]
+            ax1.scatter(px,py)
 
-#
-# ind = ind_nuevo
-# ind2 = ind_viejo
-#
-#
-# fig1 = pl.figure()
-# fig2 = pl.figure()
-# ax1 = fig1.add_subplot(111)
-# ax1.set_title('Nuevo individuo, Fitness: '+str(ind.fitness)+' -'+' Individuos: '+str(cantidadIndividuos))
-#
-# ax2 = fig2.add_subplot(111)
-# ax2.set_title('Viejo individuo, Fitness: '+str(ind2.fitness)+' -'+' Individuos: '+str(cantidadIndividuos))
-#
-#
-#
-#
-#
-# for i in range(len(ind.puntos)):
-#     if ind.puntos[i]:
-#         puntos_por_dimension = zip(*ind.puntos[i])
-#         puntos_por_dimension = list(puntos_por_dimension)
-#         px = puntos_por_dimension[dimx_graficar]
-#         py = puntos_por_dimension[dimy_graficar]
-#         ax1.scatter(px,py)
-#
-# for centroide in ind.valor:
-#     px = centroide[dimx_graficar]
-#     py = centroide[dimy_graficar]
-#     ax1.scatter(px,py)
-#
-#
-#
-# for i in range(len(ind2.puntos)):
-#     if ind2.puntos[i]:
-#         puntos_por_dimension = zip(*ind2.puntos[i])
-#         puntos_por_dimension = list(puntos_por_dimension)
-#         px = puntos_por_dimension[dimx_graficar]
-#         py = puntos_por_dimension[dimy_graficar]
-#         ax2.scatter(px,py)
-#
-# for centroide in ind2.valor:
-#     px = centroide[dimx_graficar]
-#     py = centroide[dimy_graficar]
-#     ax2.scatter(px,py)
-#
-#
-# pl.show()
+    for centroide in ind.valor:
+        px = centroide[dimx_graficar]
+        py = centroide[dimy_graficar]
+        ax1.scatter(px,py)
+
+
+
+    for i in range(len(ind2.puntos)):
+        if ind2.puntos[i]:
+            puntos_por_dimension = zip(*ind2.puntos[i])
+            puntos_por_dimension = list(puntos_por_dimension)
+            px = puntos_por_dimension[dimx_graficar]
+            py = puntos_por_dimension[dimy_graficar]
+            ax2.scatter(px,py)
+
+    for centroide in ind2.valor:
+        px = centroide[dimx_graficar]
+        py = centroide[dimy_graficar]
+        ax2.scatter(px,py)
+
+
+    pl.show()
+
+
+# mainApp(10,3)
