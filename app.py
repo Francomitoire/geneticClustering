@@ -3,8 +3,7 @@
 
 from flask import *
 import os
-from Clusters import ultimaTormenta
-
+from Modules import ultimaTormenta
 
 app = Flask(__name__)
 app.secret_key = 'IA'
@@ -53,7 +52,7 @@ def clasificar():
     if request.method == 'POST':
         cantidadIteraciones = int(request.form.get('cantIteraciones'))
         tamanoIndividuo = int(request.form.get('cantClases'))
-        solution = ultimaTormenta.mainApp(cantidadIteraciones,tamanoIndividuo)
+        solution = ultimaTormenta.mainApp(cantidadIteraciones, tamanoIndividuo)
     return render_template('clasificar.html', solution=solution)
 
 # def analizar():

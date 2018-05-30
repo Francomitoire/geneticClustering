@@ -1,4 +1,6 @@
 import math
+import platform
+
 import matplotlib.pyplot as pl
 import random
 import numpy as np
@@ -317,7 +319,11 @@ def restar_listas(lt1, lt2):
     a = [item for item in a if item not in b]
     return a
 def mainApp(cantidadIteraciones,tamanoIndividuo):
-    dataset = leerTxt("C:\\Users\\Mati\\PycharmProjects\\geneticClustering\\Clusters\\static\\archivos\\newdataset.txt")
+
+    if platform.system() == 'Windows':
+        dataset = leerTxt("C:\\Users\\Mati\\PycharmProjects\\geneticClustering\\static\\archivos\\newdataset.txt")
+    elif platform.system() =='Linux':
+        dataset = leerTxt("\\Users\\geneticClustering\\Clusters\\static\\archivos\\newdataset.txt")
     puntos = []
     puntos = list(zip(*dataset))
     puntos_a_graficar = []
