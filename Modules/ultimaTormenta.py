@@ -427,3 +427,5 @@ def mainApp(cantidadIteraciones,tamanoIndividuo):
 
 
     pl.show()
+
+#  asd
