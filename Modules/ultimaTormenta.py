@@ -10,7 +10,7 @@ import warnings
 
 class Individuo(object):
     """
-    El atributo valor es un conjunto de centroides GATOOOOOO
+    El atributo valor es un conjunto de centroides
     """
     #ESTE ATRIBUTO TIENE QUE TENER EL MAYOR FITNESS DE TODA LA POBLACION EN TO DO MOMENTO
     # mayorFitness = 0
@@ -321,7 +321,7 @@ def restar_listas(lt1, lt2):
 def mainApp(cantidadIteraciones,tamanoIndividuo):
 
     if platform.system() == 'Windows':
-        dataset = leerTxt("C:\\Users\\Mati\\PycharmProjects\\geneticClustering\\static\\archivos\\newdataset.txt")
+        dataset = leerTxt("C:\\PythonProjects\\geneticClustering\\static\\archivos\\newdataset.txt")
     elif platform.system() =='Linux':
         dataset = leerTxt("\\Users\\geneticClustering\\Clusters\\static\\archivos\\newdataset.txt")
     puntos = []
@@ -427,6 +427,3 @@ def mainApp(cantidadIteraciones,tamanoIndividuo):
 
 
     pl.show()
-
-#asd
-# mainApp(10,3)

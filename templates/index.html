@@ -58,6 +58,9 @@
 								<hr/>
 								<label class="col-form-label" data-toggle="tooltip" data-placement="bottom" title="Indique qué dimensión del dataset graficar en el eje Y">Segunda dimensión a graficar:</label>
 								<hr/>
+                                <label class="col-form-label" data-toggle="tooltip" data-placement="bottom" title="Indique con 0 si desea utilizar Implementación Propia o con 1 para implementación con Librería SKLearn">Seleccione tipo de Implementación:</label>
+                                 <hr/>
+
 							</div>
                             <div class="col-md-3">
 
@@ -69,17 +72,18 @@
 									<hr/>
 									<input class="form-control" type="number" name="dimension2" value="2" required="" min="2" max="20"  style="border-color:#495057;">
 									<hr/>
+                                    <input class="form-control" type="number" name="tipoimp" value="0" required="" min="0" max="1"  style="border-color:#495057;">
+									<hr/>
 
 							</div>
 
 
                         </div>
 						<div style="text-align:center">
-						<button class="btn btn-primary" action="/clasificar"  type="submit" data-bs-hover-animate="pulse" style="width:120px;height:initial-scale;padding:8px" id="load" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Clasificando">Clasificar</button>
+						<button class="btn btn-primary" id="clasificar" onautocomplete="off" action="/file" type="submit" data-bs-hover-animate="pulse" data-loading-text="Clasificando..." style="width:120px;height:initial-scale;padding:8px">Clasificar</button>
 						</div>
-
-
                     </form>
+
                 </div>
                 <div class="col-md-6" style="border-color:#495057;background-color:#c0dada;border-radius:5px;margin-bottom:8px;">
                     <form>
@@ -102,16 +106,13 @@
     <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js')}}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/bs-animation.js')}}"></script>
-
-	<script>
-		$('.btn').on('click', function() {
-    	var $this = $(this);
-  		$this.button('loading');
-    	setTimeout(function() {
-       	$this.button('reset');
-   		}, 8000);
-		});
-	</script>
+	 <script>
+      $('#clasificar').on('click', function () {
+        var $btn = $(this).button('loading')
+        // business logic...
+        $btn.button('reset')
+      })
+   </script>
 
 	<script>
 	$(document).ready(function(){

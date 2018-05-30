@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/Login-Form-Dark.css')}}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/Registration-Form-with-Photo.css')}}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css')}}">
+
 </head>
 
 <body style="margin:0px;background-image:url(&quot;static/img/ia2.jpg&quot;);background-repeat:no-repeat;background-size:cover;text-align:justify;">
@@ -21,7 +22,7 @@
                 <div class="col-md-6" style="margin:0 auto;border-bottom:10px;margin-bottom:10px;">
                     <form method="POST" role="form" class="form" accept-charset="UTF-8" enctype="multipart/form-data" action="{{url_for('upload_file')}}" id="dataset" style="text-align:left;margin:0 auto;margin-bottom:20px;border-color:#495057;">
                         <div style="text-align:center">
-						    <button class="btn btn-primary" action="/file" type="submit" data-bs-hover-animate="pulse" style="width:120px;height:initial-scale;padding:8px">Nuevo DataSet</button>
+						    <button class="btn btn-primary" action="/file"  data-bs-hover-animate="pulse" style="width:120px;height:initial-scale;padding:8px">Nuevo DataSet</button>
 
 						</div>
 						{% with messages = get_flashed_messages()%}
@@ -39,36 +40,46 @@
                         <div class="form-row" style="text-align:justify;">
                             <div class="col">
 
-								<label class="col-form-label">Cantidad de Clases:</label>
+								<label class="col-form-label"  data-toggle="tooltip" data-placement="bottom" title="Indique la cantidad de Clusters a encontrar">Cantidad de Clases:</label>
 								<hr/>
 
-								<label class="col-form-label">Cantidad de Generaciones:</label>
+								<label class="col-form-label"  data-toggle="tooltip" data-placement="bottom" title="Indique la cantidad de corridas del Algoritmo">Cantidad de Generaciones:</label>
 								<hr/>
-								<label class="col-form-label">Primera dimensión a graficar:</label>
+								<label class="col-form-label"  data-toggle="tooltip" data-placement="bottom" title="Indique qué dimensión del dataset graficar en el eje X">Primera dimensión a graficar:</label>
 								<hr/>
-								<label class="col-form-label">Segunda dimensión a graficar:</label>
+								<label class="col-form-label" data-toggle="tooltip" data-placement="bottom" title="Indique qué dimensión del dataset graficar en el eje Y">Segunda dimensión a graficar:</label>
 								<hr/>
+                                <label class="col-form-label" data-toggle="tooltip" data-placement="bottom" title="Indique con 0 si desea utilizar Implementación Propia o con 1 para implementación con Librería SKLearn">Seleccione tipo de Implementación:</label>
+                                <hr/>
 							</div>
                             <div class="col-md-3">
 
-									<input class="form-control" type="number" name="cantClases" required="" min="2" max="2000"  style="border-color:#495057;">
+									<input class="form-control" type="number" value="{{ request.form.get('cantClases') }}" id="cantClases" name="cantClases" required="" min="2" max="2000"  style="border-color:#495057;">
 									<hr/>
-									<input class="form-control" type="number" name="cantIteraciones" required="" min="2" max="2000"  style="border-color:#495057;">
+									<input class="form-control" type="number" value="{{ request.form.get('cantIteraciones') }}" id="cantIteraciones" name="cantIteraciones" required="" min="2" max="2000"  style="border-color:#495057;">
 									<hr/>
 									<input class="form-control" type="number" name="dimension1" value="1" required="" min="1" max="20"  style="border-color:#495057;">
 									<hr/>
 									<input class="form-control" type="number" name="dimension2" value="2" required="" min="2" max="20"  style="border-color:#495057;">
+									<hr/>
+                                    <input class="form-control" type="number" name="tipoimp" value="0" required="" min="0" max="1"  style="border-color:#495057;">
 									<hr/>
 
 							</div>
 
 
                         </div>
-						<div style="text-align:center">
-						<button class="btn btn-primary" action="/file" type="submit" data-bs-hover-animate="pulse" style="width:120px;height:initial-scale;padding:8px" id="load" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Processing">Clasificar</button>
-						</div>
+						<div style="text-align:center" >
+                            <td colspan="10">
+                            <input id="btn-class" data-bs-hover-animate="pulse" style="width:120px;height:initial-scale;padding:8px" action="/file" type = "submit" class="btn btn-primary" value = "Clasificar" onclick = "this.style.display = 'none'; loading.style.display = '';">
+                                <img src="{{ url_for('static', filename='img/loader-img.gif')}}" alt="" border="0" name = "loading" id = "loading" style = "display: none;">
+                            </td>
+
+                        </div>
 
                     </form>
+
+
                 </div>
                 <div class="col-md-6" style="border-color:#495057;background-color:#c0dada;border-radius:5px;margin-bottom:8px;">
                     <form>
@@ -91,15 +102,25 @@
     <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js')}}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/bs-animation.js')}}"></script>
+
+
+    <script>
+          $('#clasificar').on('click', function () {
+            var $btn = $(this).button('loading')
+            // business logic...
+            $btn.button('reset')
+          })
+    </script>
+
 	<script>
-		$('.btn').on('click', function() {
-    	var $this = $(this);
-  		$this.button('loading');
-    	setTimeout(function() {
-       	$this.button('reset');
-   		}, 8000);
-		});
+        $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip();
+        });
 	</script>
 </body>
 
 </html>
+
+
+
+

@@ -52,7 +52,10 @@ def clasificar():
     if request.method == 'POST':
         cantidadIteraciones = int(request.form.get('cantIteraciones'))
         tamanoIndividuo = int(request.form.get('cantClases'))
-        solution = ultimaTormenta.mainApp(cantidadIteraciones, tamanoIndividuo)
+        dimx = int(request.form.get('dimension1')) - 1
+        dimy = int(request.form.get('dimension2')) - 1
+        lib = int(request.form.get('tipoimp'))
+        solution = ultimaTormenta.mainApp(cantidadIteraciones,tamanoIndividuo)
     return render_template('clasificar.html', solution=solution)
 
 # def analizar():
@@ -72,4 +75,4 @@ def clasificar():
 #     #return render_template('inicial.html', arreglo = array[1])
 
 if __name__ == "__main__":
-    app.run(debug = True, port = 5000)
+    app.run(debug = True, port=5000)
