@@ -58,9 +58,12 @@
 								<hr/>
 								<label class="col-form-label" data-toggle="tooltip" data-placement="bottom" title="Indique qué dimensión del dataset graficar en el eje Y">Segunda dimensión a graficar:</label>
 								<hr/>
-                                <label class="col-form-label" data-toggle="tooltip" data-placement="bottom" title="Indique con 0 si desea utilizar Implementación Propia o con 1 para implementación con Librería SKLearn">Seleccione tipo de Implementación:</label>
-                                 <hr/>
-
+                                <label class="col-form-label" text-aling="left" data-toggle="tooltip" data-placement="bottom" title="Si usted no lo marca, por defecto se utilizará la implementación Propia desarrollada">Marque si desea Implementación Alternativa:</label>
+								 <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="op1" value="{{ request.form.get('op1') }}" name="op1">
+                                    <label class="form-check-label" data-toogle="tooltip" data-placement="bottom" title="SKLearn es una librería de Python para agilizar el seteo de puntos del dataset respecto a un Centroide o Atributo del individuo"  for="op1" >Implementación con SKLearn</label>
+                                </div>
+								<hr/>
 							</div>
                             <div class="col-md-3">
 
@@ -72,8 +75,8 @@
 									<hr/>
 									<input class="form-control" type="number" name="dimension2" value="2" required="" min="2" max="20"  style="border-color:#495057;">
 									<hr/>
-                                    <input class="form-control" type="number" name="tipoimp" value="0" required="" min="0" max="1"  style="border-color:#495057;">
-									<hr/>
+                                    <!--<input class="form-control" type="number" name="tipoimp" value="0" required="" min="0" max="1"  style="border-color:#495057;">-->
+									<!--<hr/>-->
 
 							</div>
 
@@ -98,6 +101,7 @@
 						<p>
 						Las Dimensiones van a ser aquellas que desea representar gráficamente.
 						</p>
+
                     </form>
                 </div>
             </div>
@@ -106,13 +110,22 @@
     <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js')}}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/bs-animation.js')}}"></script>
-	 <script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/persistent-checkboxes.js')}}"></script>
+	<script>
       $('#clasificar').on('click', function () {
         var $btn = $(this).button('loading')
         // business logic...
         $btn.button('reset')
       })
    </script>
+	<!--<script>-->
+        <!--var limit = 1;-->
+        <!--$('input.form-check-input').on('change', function(evt) {-->
+           <!--if($(this).siblings(':checked').length >= limit) {-->
+               <!--this.checked = false;-->
+           <!--}-->
+        <!--});-->
+    <!--</script>-->
 
 	<script>
 	$(document).ready(function(){

@@ -3,7 +3,7 @@
 
 from flask import *
 import os
-from Modules import ultimaTormenta
+from Modules import genetic
 
 app = Flask(__name__)
 app.secret_key = 'IA'
@@ -31,7 +31,7 @@ def upload_file():
 
         f = request.files['file']
         if f.filename == '':
-            flash('No selecciono ningun archivo')
+            flash('No seleccionó ningún archivo')
             return render_template('index.html')
 
         if f and allowed_file(f.filename):
@@ -48,31 +48,21 @@ def upload_file():
 
 @app.route('/clasificar', methods=['GET', 'POST'])
 def clasificar():
-    global solution
+    global solution, opcion1
+    opcion1 = False
+
     if request.method == 'POST':
         cantidadIteraciones = int(request.form.get('cantIteraciones'))
         tamanoIndividuo = int(request.form.get('cantClases'))
         dimx = int(request.form.get('dimension1')) - 1
         dimy = int(request.form.get('dimension2')) - 1
-        lib = int(request.form.get('tipoimp'))
-        solution = ultimaTormenta.mainApp(cantidadIteraciones,tamanoIndividuo)
+        # lib = int(request.form.get('tipoimp'))
+        if request.form.get("op1"):
+            opcion1 = True
+
+        solution = genetic.mainApp(cantidadIteraciones,tamanoIndividuo,dimx,dimy,opcion1)
     return render_template('clasificar.html', solution=solution)
 
-# def analizar():
-#     if request.method == 'POST':
-#         cantidadGeneraciones = int(request.form.get('cantGen'))
-#         cantidadIndividuos = int(request.form.get('cantInd'))
-#         cantClusters = int(request.form.get('cantClus'))
-#         metodoSeleccion = str(request.form.get('metSeleccion'))
-#         porcentajeSeleccion = int(request.form.get('porcSeleccion'))
-#         porcentajeElitista = int(request.form.get('porcElitista'))
-#         cantRanuras = int(request.form.get('cantRanuras'))
-#         porcentajeCruza = int(request.form.get('porcCruza'))
-#         puntoCruza = int(request.form.get('puntCruza'))
-#         probMutacion = float(request.form.get('probabMutacion'))
-#         arreglo = funcionGeneralParaGraficar(int(2),cantidadGeneraciones,cantidadIndividuos,cantClusters,porcentajeSeleccion,metodoSeleccion,porcentajeElitista,cantRanuras,porcentajeCruza,puntoCruza,probMutacion)
-#     return render_template('inicial.html', arreglo = arreglo)
-#     #return render_template('inicial.html', arreglo = array[1])
 
 if __name__ == "__main__":
-    app.run(debug = True, port=5000)
+    app.run(debug=True, port=5000)
