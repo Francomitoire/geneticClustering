@@ -13,16 +13,17 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/Registration-Form-with-Photo.css')}}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css')}}">
 </head>
-<!--<header>-->
-	<!--<div class="visible" style="margin:0 auto;max-width:800px;background-color:black;margin-top:2px;">-->
-  <!--<a href="#" class="navbar-left"><img src="static/img/image.png"></a>-->
+<header>
+	<div class="visible" style="margin:0 auto;max-width:800px;background-color:black;margin-top:2px;">
+  <a href="#" class="navbar-left">
+	  <img src="{{ url_for('static', filename='img/zm-logo.png')}}" height="58" width="58" style="margin-left: 10px;margin-bottom:4px"></a>
 
-<!--</div>-->
-<!--</header>-->
+</div>
+</header>
 
 
 <body style="margin:0px;background-image:url(&quot;static/img/ia2.jpg&quot;);background-repeat:no-repeat;background-size:cover;text-align:justify;">
-    <div class="visible" style="margin:0 auto;max-width:800px;background-color:#fff;border-radius:5px;;margin-top:40px;padding:5px;">
+    <div class="visible" style="margin:0 auto;max-width:800px;background-color:#fff;padding:5px;">
         <div class="container" style="margin:0 auto;">
             <div class="row" style="text-align:justify;margin:0 auto;">
                 <div class="col-md-6" style="margin:0 auto;border-bottom:10px;margin-bottom:10px;">
@@ -30,7 +31,7 @@
 						<div class="form-group">
 							<label>Seleccione DataSet:</label>
 							<div style="text-align:center">
-								<input id="file" value="algo" type="file" id="select-dataset" name="file" style="margin-bottom:13px;">
+								<input id="file" value="algo" type="file"  name="file" style="margin-bottom:13px;">
 								<input class="btn btn-primary" action="/file" value="Cargar Dataset" type="submit" align="center" data-bs-hover-animate="pulse">
 							</div>
 						</div>
@@ -45,46 +46,75 @@
 						{% endwith %}
 					</form>
 						<hr>
+					<div id="pageloader"  style=" left: 50%;margin-left: -75px;margin-top: -60px;position:absolute;top: 50%;background:none;display: none;height: 50%;position: fixed;width: 50%;z-index: 9999;">
+                                        <img src="{{ url_for('static', filename='img/carga.gif')}}"  style="position:fixed;" height="150" width="150" border="0" name = "loading"  alt="Clasificando...">
+                                    </div>
                     <form method="POST" role="form" class="form" accept-charset="UTF-8" enctype="multipart/form-data" action="{{url_for('clasificar')}}" id="parametros"id="parametros" style="text-align:center;margin:0 auto;margin-bottom:20px;border-color:#495057;">
                         <div class="form-row" style="text-align:justify;">
-                            <div class="col">
+                           <div class="col">
+							   <label class="col-form-label"  data-toggle="tooltip" data-placement="bottom" title="Indique la cantidad de individuos para la población inicial. Por ej: 100">Tamaño de la Población:</label>
+								<hr/>
+
 
 								<label class="col-form-label"  data-toggle="tooltip" data-placement="bottom" title="Indique la cantidad de Clusters a encontrar">Cantidad de Clases:</label>
 								<hr/>
 
 								<label class="col-form-label"  data-toggle="tooltip" data-placement="bottom" title="Indique la cantidad de corridas del Algoritmo">Cantidad de Generaciones:</label>
 								<hr/>
-								<label class="col-form-label"  data-toggle="tooltip" data-placement="bottom" title="Indique qué dimensión del dataset graficar en el eje X">Primera dimensión a graficar:</label>
+								<label class="col-form-label"  data-toggle="tooltip" data-placement="bottom" title="Indique el porcentaje de individuos a Seleccionar para la próxima generación. Por ej: 10">Porcentaje de Selección:</label>
+								<hr/>
+                                <label class="col-form-label"  data-toggle="tooltip" data-placement="bottom" title="Indique el porcentaje de individuos a Cruzar para la próxima generación. Por ej: 75">Porcentaje de Cruzamiento:</label>
+								<hr/>
+                                <label class="col-form-label"  data-toggle="tooltip" data-placement="bottom" title="Indique el porcentaje de individuos a mutar para la próxima generación. Por ej: 5">Porcentaje de Mutación:</label>
+								<hr/>
+                                <label class="col-form-label"  data-toggle="tooltip" data-placement="bottom" title="Indique qué dimensión del dataset graficar en el eje X">Primera dimensión a graficar:</label>
 								<hr/>
 								<label class="col-form-label" data-toggle="tooltip" data-placement="bottom" title="Indique qué dimensión del dataset graficar en el eje Y">Segunda dimensión a graficar:</label>
 								<hr/>
-                                <label class="col-form-label" text-aling="left" data-toggle="tooltip" data-placement="bottom" title="Si usted no lo marca, por defecto se utilizará la implementación Propia desarrollada">Marque si desea Implementación Alternativa:</label>
-								 <div class="form-check">
+                                <label class="col-form-label" data-toggle="tooltip" data-placement="bottom" title="Si usted no lo marca, por defecto se utilizará la implementación Propia desarrollada">Marque si desea Implementación Alternativa:</label>
+                                <div class="form-check">
                                     <input type="checkbox" class="form-check-input" id="op1" value="{{ request.form.get('op1') }}" name="op1">
-                                    <label class="form-check-label" data-toogle="tooltip" data-placement="bottom" title="SKLearn es una librería de Python para agilizar el seteo de puntos del dataset respecto a un Centroide o Atributo del individuo"  for="op1" >Implementación con SKLearn</label>
+                                    <label class="form-check-label" for="op1" data-toogle="tooltip" data-placement="bottom" title="SKLearn es una librería de Python para agilizar el seteo de puntos del dataset respecto a un Centroide o Atributo del individuo">Implementación con SKLearn</label>
+
                                 </div>
 								<hr/>
 							</div>
                             <div class="col-md-3">
-
-									<input class="form-control" type="number" name="cantClases" required="" min="2" max="2000"  style="border-color:#495057;">
+									<input class="form-control" type="number" value="{{ request.form.get('cantidadIndividuos') }}" id="cantidadIndividuos" name="cantidadIndividuos" required="" min="6" max="2000"  style="border-color:#495057;">
 									<hr/>
-									<input class="form-control" type="number" name="cantIteraciones" required="" min="2" max="2000"  style="border-color:#495057;">
+
+									<input class="form-control" type="number" value="{{ request.form.get('cantClases') }}" id="cantClases" name="cantClases" required="" min="2" max="2000"  style="border-color:#495057;">
+									<hr/>
+									<input class="form-control" type="number" value="{{ request.form.get('cantIteraciones') }}" id="cantIteraciones" name="cantIteraciones" required="" min="2" max="2000"  style="border-color:#495057;">
+									<hr/>
+                                    <input class="form-control" type="number" value="{{ request.form.get('porcSeleccion') }}" id="porcSeleccion" name="porcSeleccion" required="" min="0" max="100"  style="border-color:#495057;">
+									<hr/>
+                                    <input class="form-control" type="number" value="{{ request.form.get('porcCruza') }}" id="porcCruza" name="porcCruza" required="" min="0" max="100"  style="border-color:#495057;">
+									<hr/>
+                                    <input class="form-control" type="number" value="{{ request.form.get('porMutacion') }}" id="porMutacion" name="porMutacion" required="" min="0" max="100"  style="border-color:#495057;">
 									<hr/>
 									<input class="form-control" type="number" name="dimension1" value="1" required="" min="1" max="20"  style="border-color:#495057;">
 									<hr/>
 									<input class="form-control" type="number" name="dimension2" value="2" required="" min="2" max="20"  style="border-color:#495057;">
 									<hr/>
-                                    <!--<input class="form-control" type="number" name="tipoimp" value="0" required="" min="0" max="1"  style="border-color:#495057;">-->
-									<!--<hr/>-->
+
+
 
 							</div>
 
 
                         </div>
-						<div style="text-align:center">
-						<button class="btn btn-primary" id="clasificar" onautocomplete="off" action="/file" type="submit" data-bs-hover-animate="pulse" data-loading-text="Clasificando..." style="width:120px;height:initial-scale;padding:8px">Clasificar</button>
-						</div>
+						<div style="text-align:center" >
+                            <td colspan="10">
+                                <div id="formsubmitbutton">
+                            <input id="btn-class" data-bs-hover-animate="pulse" style="width:120px;height:initial-scale;padding:8px" action="/file" type = "submit" class="btn btn-primary" value = "Clasificar" name="submitter" onclick ="ButtonClicked()">
+                                </div>
+                                    <div id="buttonreplacement"  style="display:none;">
+                                        <img src="{{ url_for('static', filename='img/loader-img.gif')}}"  border="0" name = "loading" id = "loading" alt="Clasificando...">
+                                    </div>
+                            </td>
+
+                        </div>
                     </form>
 
                 </div>
@@ -99,6 +129,9 @@
 
 						</p>
 						<p>
+						Los porcentajes de los operadores genéticos tienen que dar una suma igual a 100 para una correcta clasificación.
+						</p>
+						<p>
 						Las Dimensiones van a ser aquellas que desea representar gráficamente.
 						</p>
 
@@ -111,27 +144,96 @@
     <script type="text/javascript" src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js')}}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/bs-animation.js')}}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/persistent-checkboxes.js')}}"></script>
-	<script>
-      $('#clasificar').on('click', function () {
-        var $btn = $(this).button('loading')
-        // business logic...
-        $btn.button('reset')
-      })
-   </script>
-	<!--<script>-->
-        <!--var limit = 1;-->
-        <!--$('input.form-check-input').on('change', function(evt) {-->
-           <!--if($(this).siblings(':checked').length >= limit) {-->
-               <!--this.checked = false;-->
-           <!--}-->
-        <!--});-->
-    <!--</script>-->
+  <script>
+        var limit = 1;
+        $('input.form-check-input').on('change', function(evt) {
+           if($(this).siblings(':checked').length >= limit) {
+               this.checked = false;
+           }
+        });
+    </script>
+
+    <script>
+            ButtonClicked = function(){
+         var validate = true;
+       $('input:required').each(function(){
+        if($(this).val().trim() === ''){
+            validate = false;
+        }
+       });
+
+       if(validate) {
+            document.getElementById("formsubmitbutton").style.display = "none"; // to undisplay
+        document.getElementById("buttonreplacement").style.display = ""; // to display
+        return true;
+       }
+    }
+
+    var FirstLoading = true;
+    function RestoreSubmitButton()
+    {
+       if( FirstLoading )
+       {
+          FirstLoading = false;
+          return;
+       }
+       document.getElementById("formsubmitbutton").style.display = ""; // to display
+       document.getElementById("buttonreplacement").style.display = "none"; // to undisplay
+    }
+    // To disable restoring submit button, disable or delete next line.
+
+    document.onfocus = RestoreSubmitButton;
+
+   var x;
+    var clases;
+    var generations;
+    x = document.getElementById("cantidadIndividuos").value;
+    clases = document.getElementById("cantClases").value;
+    generations = document.getElementById("cantIteraciones").value;
+    if (x < 10 or x == "") {
+        alert("Enter a Valid Roll Number");
+        document.onfocus = RestoreSubmitButton;
+    } else { document.getElementById("formsubmitbutton").style.display = "none"; // to undisplay
+        document.getElementById("buttonreplacement").style.display = ""; // to display
+
+    };
+    if (clases == "" or clases < 2) {
+        alert("Enter a Valid Roll Number");
+
+        return false;
+    } else { document.getElementById("formsubmitbutton").style.display = "none"; // to undisplay
+        document.getElementById("buttonreplacement").style.display = ""; // to display
+
+    };
+    if (generations == "" or generations < 2) {
+        alert("Enter a Valid Roll Number");
+
+        return false;
+    } else { document.getElementById("formsubmitbutton").style.display = "none"; // to undisplay
+        document.getElementById("buttonreplacement").style.display = ""; // to display
+
+    };
+    </script>
+    <script>
+          $('#clasificar').on('click', function () {
+            var $btn = $(this).button('loading')
+            // business logic...
+            $btn.button('reset')
+          })
+    </script>
 
 	<script>
-	$(document).ready(function(){
-		$('[data-toggle="tooltip"]').tooltip();
-	});
+        $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip();
+        });
 	</script>
+    <script type="text/javascript">
+                $(document).ready(function(){
+          $("#parametros").on("submit", function(){
+            $("#pageloader").fadeIn();
+          });//submit
+        });//document ready
+    </script>
 
 </body>
 

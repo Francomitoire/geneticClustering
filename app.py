@@ -52,15 +52,32 @@ def clasificar():
     opcion1 = False
 
     if request.method == 'POST':
+        cantidadIndividuos = int(request.form.get('cantidadIndividuos'))
         cantidadIteraciones = int(request.form.get('cantIteraciones'))
         tamanoIndividuo = int(request.form.get('cantClases'))
         dimx = int(request.form.get('dimension1')) - 1
         dimy = int(request.form.get('dimension2')) - 1
-        # lib = int(request.form.get('tipoimp'))
+        porcSeleccion = int(request.form.get('porcSeleccion'))
+        porcCruza = int(request.form.get('porcCruza'))
+        porcMutacion = int(request.form.get('porcMutacion'))
+        if (cantidadIndividuos<10):
+            flash('Error!! Los parametros ingresados son incorrectos, por favor lea los tips antes de ingresar')
+            return render_template('clasificar.html')
+
+        if (porcMutacion == 0 or porcCruza ==0 or porcSeleccion==0):
+            flash('Error!! no puede haber porcentajes vacios! Sino no estaría aplicando un Operador fundamental del Algoritmo!!')
+            return render_template(('clasificar.html'))
+        if (porcMutacion+porcCruza+porcSeleccion) != 100:
+            flash('Error!!Los porcentajes tienen que dar suma igual a 100')
+            return render_template(('clasificar.html'))
+        if (cantidadIndividuos < 10):
+            flash('Error!!, el tamaño de la población mínimo es de 10 individuos!!')
+            return render_template(('clasificar.html'))
         if request.form.get("op1"):
             opcion1 = True
+        # solution = genetic.mainApp(cantidadIteraciones,tamanoIndividuo,dimx,dimy,opcion1)
 
-        solution = genetic.mainApp(cantidadIteraciones,tamanoIndividuo,dimx,dimy,opcion1)
+        solution = genetic.mainApp(cantidadIndividuos,cantidadIteraciones,tamanoIndividuo,dimx,dimy,opcion1,porcSeleccion,porcCruza,porcMutacion)
     return render_template('clasificar.html', solution=solution)
 
 
