@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algoritmo Genético para análisis de Clusters</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Contact-Form-Clean.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Features-Boxed.css')}}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Login-Form-Dark.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Registration-Form-with-Photo.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css')}}">
+</head>
+<!--<header>-->
+	<!--<div class="visible" style="margin:0 auto;max-width:800px;background-color:black;margin-top:2px;">-->
+  <!--<a href="#" class="navbar-left"><img src="static/img/image.png"></a>-->
+
+<!--</div>-->
+<!--</header>-->
+
+
+<body style="margin:0px;background-image:url(&quot;static/img/ia2.jpg&quot;);background-repeat:no-repeat;background-size:cover;text-align:justify;">
+    <div class="visible" style="margin:0 auto;max-width:800px;background-color:#fff;border-radius:5px;;margin-top:40px;padding:5px;">
+        <div class="container" style="margin:0 auto;">
+            <div class="row" style="text-align:justify;margin:0 auto;">
+                <div class="col-md-6" style="margin:0 auto;border-bottom:10px;margin-bottom:10px;">
+                    <form method="POST" role="form" class="form" accept-charset="UTF-8" enctype="multipart/form-data" action="{{url_for('upload_file')}}" id="dataset" style="text-align:left;margin:0 auto;margin-bottom:20px;border-color:#495057;">
+						<div class="form-group">
+							<label>Seleccione DataSet:</label>
+							<div style="text-align:center">
+								<input id="file" value="algo" type="file" id="select-dataset" name="file" style="margin-bottom:13px;">
+								<input class="btn btn-primary" action="/file" value="Cargar Dataset" type="submit" align="center" data-bs-hover-animate="pulse">
+							</div>
+						</div>
+						{% with messages = get_flashed_messages()%}
+							{% if messages %}
+								<ul class=flashes>
+									{% for message in messages %}
+										{{ message }}
+									{% endfor %}
+								</ul>
+							{% endif %}
+						{% endwith %}
+					</form>
+						<hr>
+                    <form method="POST" role="form" class="form" accept-charset="UTF-8" enctype="multipart/form-data" action="{{url_for('clasificar')}}" id="parametros"id="parametros" style="text-align:center;margin:0 auto;margin-bottom:20px;border-color:#495057;">
+                        <div class="form-row" style="text-align:justify;">
+                            <div class="col">
+
+								<label class="col-form-label"  data-toggle="tooltip" data-placement="bottom" title="Indique la cantidad de Clusters a encontrar">Cantidad de Clases:</label>
+								<hr/>
+
+								<label class="col-form-label"  data-toggle="tooltip" data-placement="bottom" title="Indique la cantidad de corridas del Algoritmo">Cantidad de Generaciones:</label>
+								<hr/>
+								<label class="col-form-label"  data-toggle="tooltip" data-placement="bottom" title="Indique qué dimensión del dataset graficar en el eje X">Primera dimensión a graficar:</label>
+								<hr/>
+								<label class="col-form-label" data-toggle="tooltip" data-placement="bottom" title="Indique qué dimensión del dataset graficar en el eje Y">Segunda dimensión a graficar:</label>
+								<hr/>
+                                <label class="col-form-label" text-aling="left" data-toggle="tooltip" data-placement="bottom" title="Si usted no lo marca, por defecto se utilizará la implementación Propia desarrollada">Marque si desea Implementación Alternativa:</label>
+								 <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="op1" value="{{ request.form.get('op1') }}" name="op1">
+                                    <label class="form-check-label" data-toogle="tooltip" data-placement="bottom" title="SKLearn es una librería de Python para agilizar el seteo de puntos del dataset respecto a un Centroide o Atributo del individuo"  for="op1" >Implementación con SKLearn</label>
+                                </div>
+								<hr/>
+							</div>
+                            <div class="col-md-3">
+
+									<input class="form-control" type="number" name="cantClases" required="" min="2" max="2000"  style="border-color:#495057;">
+									<hr/>
+									<input class="form-control" type="number" name="cantIteraciones" required="" min="2" max="2000"  style="border-color:#495057;">
+									<hr/>
+									<input class="form-control" type="number" name="dimension1" value="1" required="" min="1" max="20"  style="border-color:#495057;">
+									<hr/>
+									<input class="form-control" type="number" name="dimension2" value="2" required="" min="2" max="20"  style="border-color:#495057;">
+									<hr/>
+                                    <!--<input class="form-control" type="number" name="tipoimp" value="0" required="" min="0" max="1"  style="border-color:#495057;">-->
+									<!--<hr/>-->
+
+							</div>
+
+
+                        </div>
+						<div style="text-align:center">
+						<button class="btn btn-primary" id="clasificar" onautocomplete="off" action="/file" type="submit" data-bs-hover-animate="pulse" data-loading-text="Clasificando..." style="width:120px;height:initial-scale;padding:8px">Clasificar</button>
+						</div>
+                    </form>
+
+                </div>
+                <div class="col-md-6" style="border-color:#495057;background-color:#c0dada;border-radius:5px;margin-bottom:8px;">
+                    <form>
+                        <h5 style="text-align:left;">Algoritmos Genéticos para el análisis de Clusters</h5>
+                        <p>Programa que realiza análisis de Clusters mediante la utilización de una implementación de Algoritmo Genético.
+
+						<p>
+						Una vez que seleccione y cargue el dataset, indique los parámetros de entrada que desea, para realizar una clasificación del set de datos.
+						</p>
+
+						</p>
+						<p>
+						Las Dimensiones van a ser aquellas que desea representar gráficamente.
+						</p>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.min.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/bs-animation.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/persistent-checkboxes.js')}}"></script>
+	<script>
+      $('#clasificar').on('click', function () {
+        var $btn = $(this).button('loading')
+        // business logic...
+        $btn.button('reset')
+      })
+   </script>
+	<!--<script>-->
+        <!--var limit = 1;-->
+        <!--$('input.form-check-input').on('change', function(evt) {-->
+           <!--if($(this).siblings(':checked').length >= limit) {-->
+               <!--this.checked = false;-->
+           <!--}-->
+        <!--});-->
+    <!--</script>-->
+
+	<script>
+	$(document).ready(function(){
+		$('[data-toggle="tooltip"]').tooltip();
+	});
+	</script>
+
+</body>
+
+</html>
